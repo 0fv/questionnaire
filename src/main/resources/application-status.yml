@@ -1,0 +1,7 @@
+web:
+  status:
+    templateNotFound:
+      code: 4001
+      msg: 模板未找到
+    formatError:
+      code: 4002
