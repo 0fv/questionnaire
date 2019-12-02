@@ -1,0 +1,26 @@
+version: "3.7"
+services:
+  mongodb:
+    image: mongo
+    container_name: t_mongodb
+    ports:
+      - 27017:27017
+    volumes:
+    - ./data/mongo:/data
+  rabbitmq:
+    image: rabbitmq:3.7-management
+    container_name: t_rabbitmq
+    ports:
+      - 5672:5672
+    hostname: mq1
+    environment:
+      - RABBITMQ_DEFAULT_VHOST=my_vhost
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=123123
+  redis:
+    image: redis
+    container_name: t_redis
+    ports:
+      - 6379:6379
+    volumes:
+      - ./data/redis:/data
