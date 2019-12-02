@@ -24,7 +24,7 @@ public class MyExceptionHandler {
     private String templateNotFoundMsg;
     @Value("${web.status.formatError.code}")
     private Integer formatErrorCode;
-    @Value("${web.status.elementNotFound.code")
+    @Value("${web.status.elementNotFound.code}")
     private Integer elementNotFoundCode;
     @Value("${web.status.elementNotFound.msg}")
     private String elementNotFoundMsg;

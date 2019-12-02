@@ -1,7 +1,9 @@
 package space.nyuki.questionnaire.pojo.answer;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import space.nyuki.questionnaire.group.GroupView;
 
 import javax.validation.constraints.NotNull;
@@ -14,6 +16,7 @@ import java.sql.Timestamp;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class InquiryDate implements AnswerCell{
     @NotNull(
             message = "日期不能为空",
@@ -21,5 +24,5 @@ public class InquiryDate implements AnswerCell{
                     GroupView.Input.class
             }
     )
-    private Timestamp timestamp;
+    private Timestamp date;
 }

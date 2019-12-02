@@ -10,6 +10,6 @@ public class GroupView {
     public interface View{}
     public interface Create{}
     public interface Get{}
-    public interface Delete {}
+    public interface Gen {}
     public interface Update {}
 }

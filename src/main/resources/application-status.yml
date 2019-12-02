@@ -5,3 +5,6 @@ web:
       msg: 模板未找到
     formatError:
       code: 4002
+    elementNotFound:
+      code: 4003
+      msg: 元素未找到

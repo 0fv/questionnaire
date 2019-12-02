@@ -2,6 +2,7 @@ package space.nyuki.questionnaire.pojo.answer;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import space.nyuki.questionnaire.group.GroupView;
 
 import javax.validation.constraints.NotNull;
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Comment implements AnswerCell {
     @NotNull(
             message = "评论不能为null",

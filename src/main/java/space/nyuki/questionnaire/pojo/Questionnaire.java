@@ -57,15 +57,17 @@ public class Questionnaire {
             groups = {GroupView.Create.class}
     )
     @Pattern(
-            regexp = "[0-9|a-z|A-Z]{32}",
+            regexp = "[0-9|a-z|A-Z]{8}-[0-9|a-z|A-Z]{4}"+
+            "-[0-9|a-z|A-Z]{4}-[0-9|a-z|A-Z]{4}"+
+            "-[0-9|a-z|A-Z]{12}",
             message = "uuid 格式不规范",
             groups = {GroupView.Create.class}
     )
     @JsonView({
             GroupView.Create.class
     })
-    @Field("uuid")
-    @JsonProperty("uuid")
+    @Field("UUID")
+    @JsonProperty("UUID")
     private String uuid;
     @JsonView(GroupView.View.class)
     @Field("created_time")
@@ -84,7 +86,7 @@ public class Questionnaire {
     })
     private List<QuestionCell> questionCells;
     @Field("is_delete")
-    @JsonProperty("is_delete")
+    @JsonIgnore
     // 1 已删除 0 未删除
     private Integer isDelete;
 

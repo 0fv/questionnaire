@@ -29,6 +29,7 @@ public class MongoTest {
         Questionnaire questionnaire = new Questionnaire();
         questionnaire.setName("nihaox");
         questionnaire.setIntroduce("buhao");
+        questionnaire.setUuid("dee11d4e-63c6-4d90-983c-5a9f1e79e96c");
         questionnaireService.createQuestionnaire(questionnaire);
     }
     @Test
@@ -36,7 +37,7 @@ public class MongoTest {
         Questionnaire questionnaire = new Questionnaire();
         questionnaire.setName("nihaox");
         questionnaire.setIntroduce("buhao");
-        questionnaire.setUuid("sdfsdfsdf");
+        questionnaire.setUuid("dee11d4e-63c6-4d90-983c-5c9f1e79e96c");
         Map<String, Object> stringObjectMap = MapUtil.objectToMap(questionnaire);
         System.out.println(stringObjectMap);
     }

@@ -10,10 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 import space.nyuki.questionnaire.exception.ElementNotFoundException;
 import space.nyuki.questionnaire.pojo.QuestionCell;
 import space.nyuki.questionnaire.pojo.Questionnaire;
+import space.nyuki.questionnaire.pojo.ResultCollection;
 import space.nyuki.questionnaire.utils.MapUtil;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import static org.springframework.data.mongodb.core.query.Query.query;
 
 /**
  * @author ning
@@ -29,7 +35,7 @@ public class QuestionnaireService {
     public void createQuestionnaire(Questionnaire questionnaire) {
         String uuid = questionnaire.getUuid();
         System.out.println(uuid);
-        Questionnaire q = mongoTemplate.findOne(Query.query((Criteria.where("uuid").is(uuid))),
+        Questionnaire q = mongoTemplate.findOne(query((Criteria.where("uuid").is(uuid))),
                 Questionnaire.class, "questionnaire");
         System.out.println("q = " + q);
         if (Objects.isNull(q)) {
@@ -46,7 +52,8 @@ public class QuestionnaireService {
     public void deleteQuestionnaire(String id) {
         Update update = new Update();
         update.set("is_delete", 1);
-        mongoTemplate.findAndModify(Query.query(Criteria.where("_id").is(id))
+        update.set("modify_time", new Date());
+        mongoTemplate.findAndModify(query(Criteria.where("_id").is(id))
                 , update, Questionnaire.class);
     }
 
@@ -57,7 +64,7 @@ public class QuestionnaireService {
         map.forEach(update::set);
         update.set("modify_time", new Date());
         mongoTemplate.findAndModify(
-                Query.query(Criteria.where("_id").is(questionnaire.getId())),
+                query(Criteria.where("_id").is(questionnaire.getId())),
                 update,
                 Questionnaire.class);
     }
@@ -66,40 +73,48 @@ public class QuestionnaireService {
         Query query = new Query();
         query.skip((page - 1) * pageSize);
         query.limit(pageSize);
+        query.addCriteria(Criteria.where("is_delete").is(0));
         return mongoTemplate.find(query, Questionnaire.class);
     }
 
     public List<QuestionCell> getQuestions(String id) {
         Questionnaire questionnaire = mongoTemplate.findOne(
-                Query.query(Criteria.where("_id").is(id)),
+                query(Criteria.where("_id").is(id)),
                 Questionnaire.class
         );
         if (questionnaire != null) {
+            System.out.println(questionnaire.getQuestionCells());
             return questionnaire.getQuestionCells();
         } else {
             return null;
         }
     }
 
+    @Transactional
     public void addQuestion(String id, QuestionCell questionCell) {
         Questionnaire questionnaire = mongoTemplate.findOne(
-                Query.query(Criteria.where("_id").is(id)),
+                query(Criteria.where("_id").is(id)),
                 Questionnaire.class
         );
         if (questionnaire != null) {
             List<QuestionCell> questionCells = questionnaire.getQuestionCells();
-            if (Objects.isNull(questionCells)) {
-                questionCells = new ArrayList<>();
-            }
-            questionCells.add(questionCell);
-        }else{
+            Update update = new Update();
+            update.addToSet("questions", questionCell);
+            update.set("modify_time", new Date());
+            mongoTemplate.findAndModify(
+                    Query.query(Criteria.where("_id").is(id)),
+                    update,
+                    Questionnaire.class
+            );
+        } else {
             throw new ElementNotFoundException();
         }
     }
 
+    @Transactional
     public void alterQuestion(String qid, Integer cid, QuestionCell questionCell) {
         Questionnaire questionnaire = mongoTemplate.findOne(
-                Query.query(Criteria.where("_id").is(qid)),
+                query(Criteria.where("_id").is(qid)),
                 Questionnaire.class
         );
         if (questionnaire != null) {
@@ -110,28 +125,61 @@ public class QuestionnaireService {
                 } catch (Exception e) {
                     throw new ElementNotFoundException("question cell");
                 }
-            }else {
+                Update update = new Update();
+                update.set("questions", questionCells);
+                update.set("modify_time", new Date());
+                mongoTemplate.findAndModify(
+                        Query.query(Criteria.where("_id").is(qid)),
+                        update,
+                        Questionnaire.class
+                );
+            } else {
                 throw new ElementNotFoundException("questionnaire");
             }
-        }else{
+        } else {
             throw new ElementNotFoundException("questionnaire");
         }
     }
 
     public void deleteQuestion(String qid, Integer cid) {
         Questionnaire questionnaire = mongoTemplate.findOne(
-                Query.query(Criteria.where("_id").is(qid)),
+                query(Criteria.where("_id").is(qid)),
                 Questionnaire.class
         );
         if (questionnaire != null) {
             List<QuestionCell> questionCells = questionnaire.getQuestionCells();
             try {
-                questionCells.remove(cid-1);
+                questionCells.remove(cid - 1);
             } catch (Exception e) {
                 throw new ElementNotFoundException("question cell");
             }
-        }else{
+            Update update = new Update();
+            update.set("modify_time", new Date());
+            update.set("questions", questionCells);
+            mongoTemplate.findAndModify(
+                    Query.query(Criteria.where("_id").is(qid)),
+                    update,
+                    Questionnaire.class
+            );
+        } else {
             throw new ElementNotFoundException("questionnaire");
         }
     }
-}
+
+    public void startInvestigation(ResultCollection resultCollection) {
+        Questionnaire questionnaire = mongoTemplate.findOne(
+                query(Criteria.where("_id").is(resultCollection.getQuestionnaireId())),
+                Questionnaire.class
+        );
+        if (Objects.nonNull(questionnaire)) {
+            List<QuestionCell> questionCells = questionnaire.getQuestionCells();
+            if (Objects.isNull(questionCells) || questionCells.isEmpty()) {
+                throw new ElementNotFoundException("question cell");
+            } else {
+                resultCollection.setQuestionCells(questionCells);
+            }
+        }else{
+                throw new ElementNotFoundException("questionnaire");
+            }
+        }
+    }

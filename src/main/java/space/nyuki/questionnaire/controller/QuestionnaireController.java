@@ -9,9 +9,12 @@ import space.nyuki.questionnaire.factory.TransFactory;
 import space.nyuki.questionnaire.group.GroupView;
 import space.nyuki.questionnaire.pojo.QuestionCell;
 import space.nyuki.questionnaire.pojo.Questionnaire;
+import space.nyuki.questionnaire.pojo.ResultCollection;
 import space.nyuki.questionnaire.pojo.TransData;
 import space.nyuki.questionnaire.service.QuestionnaireService;
 import space.nyuki.questionnaire.utils.ValidUtil;
+
+import java.util.Date;
 
 /**
  * @author ning
@@ -98,6 +101,17 @@ public class QuestionnaireController {
             @PathVariable("cid") Integer cid
     ){
         questionnaireService.deleteQuestion(qid,cid);
+        return TransFactory.getSuccessResponse();
+    }
+    @JsonView(GroupView.Gen.class)
+    @PostMapping("start")
+    public TransData startInvestigation(
+            @Validated(GroupView.Gen.class)
+            @RequestBody ResultCollection resultCollection,
+            BindingResult bindingResult
+            ){
+        ValidUtil.valid(bindingResult);
+        questionnaireService.startInvestigation(resultCollection);
         return TransFactory.getSuccessResponse();
     }
 
