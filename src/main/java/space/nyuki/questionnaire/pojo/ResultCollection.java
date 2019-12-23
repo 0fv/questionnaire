@@ -3,6 +3,8 @@ package space.nyuki.questionnaire.pojo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -25,27 +27,16 @@ import java.util.List;
 @Document
 @Data
 @NoArgsConstructor
+@ApiModel("问卷调查结果")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResultCollection{
     @Id
     private String id;
     @Field("clientId")
+    @ApiModelProperty("用户id")
     //用户id，匿名时通过ip地址限定，非匿名使用提供给用户id进行限定
     private String clientId;
-    @Field("name")
-    @JsonView({
-            GroupView.Gen.class
-    })
-    @NotNull(
-            groups = { GroupView.Gen.class},
-            message = "名称不能为空"
-    )
-    private String name;
-    @Field("introduce")
-    @JsonView({
-            GroupView.Gen.class
-    })
-    private String introduce;
+    @ApiModelProperty("此次调查的id")
     @Field("q_id")
     @JsonProperty("q_id")
     @JsonView({
@@ -60,6 +51,7 @@ public class ResultCollection{
             message = "必须大于当前时间",
             groups = { GroupView.Gen.class}
     )
+    @ApiModelProperty("开始进行调查的时间")
     @Field("start_time")
     @JsonProperty("start_time")
     @JsonView({
@@ -67,11 +59,13 @@ public class ResultCollection{
     })
     private Date startTime;
     @JsonProperty("end_time")
+    @ApiModelProperty("结束调查的时间")
     @Field("end_time")
     @JsonView({
             GroupView.Gen.class
     })
     private Date endTime;
+    @ApiModelProperty("答题时限，是否有0代表无")
     @Field("time_limit")
     @JsonProperty("time_limit")
     // 单位 分钟 0 代表无时限
@@ -80,6 +74,7 @@ public class ResultCollection{
     })
     private Integer timeLimit;
     @Field("use_time")
+    @ApiModelProperty("答题时限，是否有0代表无")
     @JsonProperty("use_time")
     //答题用时 单位分钟，取整
     private Integer useTime;

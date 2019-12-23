@@ -1,6 +1,9 @@
 spring:
+  devtools:
+    restart:
+      enabled: true
   profiles:
-    include: status
+    include: status,swagger
   application:
     name: questionnaire
   jackson:

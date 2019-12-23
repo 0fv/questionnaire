@@ -28,11 +28,24 @@ public class MyExceptionHandler {
     private Integer elementNotFoundCode;
     @Value("${web.status.elementNotFound.msg}")
     private String elementNotFoundMsg;
+    @Value("${web.status.indexOutOfBounds.msg}")
+    private String indexOutOfBoundsMsg;
+    @Value("${web.status.indexOutOfBounds.code}")
+    private Integer indexOutOfBoundsCode;
+
+    private Integer httpMessageNotReadable.;
+    private Integer httpMessageNotReadable
     @ExceptionHandler({
             TemplateNotFoundException.class,
-            HttpMessageNotReadableException.class})
+            })
     public TransData templateNotFoundException(){
         return TransFactory.getFailedResponse(templateNotFoundCode,templateNotFoundMsg);
+    }
+    @ExceptionHandler({
+            HttpMessageNotReadableException.class
+    })
+    public TransData httpMessageNotReadable(){
+        return TransFactory.getFailedResponse();
     }
     @ExceptionHandler(FormatNotCorrectException.class)
     public TransData formatNotCorrectException(FormatNotCorrectException e){
@@ -44,6 +57,10 @@ public class MyExceptionHandler {
     public TransData elementNotFoundException(ElementNotFoundException e){
         return TransFactory.getFailedResponse(
                 elementNotFoundCode,elementNotFoundMsg+":"+e.getMessage());
+    }
+    @ExceptionHandler(IndexOutOfBoundsException.class)
+    public TransData indexOutOfBoundsException(){
+        return TransFactory.getFailedResponse(indexOutOfBoundsCode,indexOutOfBoundsMsg);
     }
 
 }

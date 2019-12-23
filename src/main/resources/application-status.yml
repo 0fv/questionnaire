@@ -8,3 +8,6 @@ web:
     elementNotFound:
       code: 4003
       msg: 元素未找到
+    indexOutOfBounds:
+      code: 4004
+      msg: 数组越界，请检查索引

@@ -1,6 +1,8 @@
 package space.nyuki.questionnaire.pojo.answer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +20,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel("答题方框--单/多选")
 public class Choice implements AnswerCell {
     @NotNull(
             message = "选项不能为空",
@@ -25,6 +28,7 @@ public class Choice implements AnswerCell {
                     GroupView.Create.class
             }
     )
+    @ApiModelProperty(value = "选项以及答案",example = "{\"选择?\",\"true\"}")
     private Map<String, Boolean> choice;
     @NotNull(
             message = "请选择是否为多选",
@@ -32,6 +36,7 @@ public class Choice implements AnswerCell {
                     GroupView.Create.class
             }
     )
+    @ApiModelProperty(value = "是否为多选")
     @Field("is_multi")
     @JsonProperty("is_multi")
     private Boolean isMulti;

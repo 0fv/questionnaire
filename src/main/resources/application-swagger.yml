@@ -1,0 +1,10 @@
+swagger:
+  base-path: /**
+  base-package: 'space.nyuki'
+  title: 'questionnaire'
+  description: '创建问卷调查相关api'
+  version: '1.0'
+  contact:
+    name: 'ning'
+    url: 'ntn9115.github.io'
+    email: 'accelerator314@gmail.com'
