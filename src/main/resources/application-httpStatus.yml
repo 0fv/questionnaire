@@ -1,0 +1,18 @@
+TemplateNotFound:
+  code: 4001
+  msg: 模板未找到
+FormatNotCorrect:
+  code: 4002
+  msg: 格式验证错误
+ElementNotFound:
+  code: 4003
+  msg: 元素未找到
+IndexOutOfBounds:
+  code: 4004
+  msg: 数组越界，请检查索引
+HttpMessageNotReadable:
+  code: 4005
+  msg: json格式错误，请检查格式
+CanNotEdit:
+  code: 4006
+  msg: 当前状态不能编辑，请切换其编辑状态

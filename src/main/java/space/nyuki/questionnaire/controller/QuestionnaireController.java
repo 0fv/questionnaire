@@ -44,6 +44,12 @@ public class QuestionnaireController {
         questionnaireService.deleteQuestionnaire(id);
         return TransFactory.getSuccessResponse();
     }
+    @ApiOperation("还原被删除问卷调查表")
+    @GetMapping("reverse/{id}")
+    public TransData reverseDeletedQuestionnaire(@PathVariable String id){
+        questionnaireService.reverseDeleteQuestionnaire(id);
+        return TransFactory.getSuccessResponse();
+    }
 
     @ApiOperation("修改问卷调查表")
     @PutMapping
@@ -71,6 +77,15 @@ public class QuestionnaireController {
             return TransFactory.getSuccessResponse(questionnaireService.getQuestionnaire(page,pageSize,isEdit));
         }
 
+    }
+    @ApiOperation("更改编辑状态")
+    @GetMapping("edit/")
+    public TransData changeEditStatus(
+            @RequestParam(name = "id",required = true) String id,
+            @RequestParam(name = "isEdit",required = true) Integer isEdit
+    ){
+        questionnaireService.editChange(id,isEdit);
+        return TransFactory.getSuccessResponse();
     }
 
 

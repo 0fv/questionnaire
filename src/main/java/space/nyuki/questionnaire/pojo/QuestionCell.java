@@ -37,7 +37,7 @@ public class QuestionCell {
             groups = {GroupView.Create.class
             }
     )
-    @ApiModelProperty(value = "答案",example = "[{\"type\":\"comment\",\"comment\":\"\"}]")
+    @ApiModelProperty(value = "答案",example = "{\"comment\":{\"comment\": \"\"}}")
     @Field("answer_cells")
     @JsonProperty("answer_cells")
     private List<AnswerCell> answerCells;

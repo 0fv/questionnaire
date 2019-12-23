@@ -3,6 +3,7 @@ package space.nyuki.questionnaire.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.nyuki.questionnaire.pojo.QuestionCell;
 import space.nyuki.questionnaire.pojo.QuestionGroup;
@@ -17,6 +18,7 @@ import java.util.Objects;
  * @createTime 12/22/19 8:32 PM
  * @description 问题服务
  */
+@Service
 public class QuestionService {
 
     @Autowired

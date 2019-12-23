@@ -3,9 +3,6 @@ package space.nyuki.questionnaire.pojo.answer;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.annotations.ApiModel;
-import lombok.AllArgsConstructor;
-
-import java.awt.*;
 
 /**
  * @author ning
@@ -14,12 +11,12 @@ import java.awt.*;
  */
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "type")
+        include = JsonTypeInfo.As.WRAPPER_OBJECT
+)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Choice.class, name = "choice"),
         @JsonSubTypes.Type(value = Comment.class, name = "comment"),
-        @JsonSubTypes.Type(value = InquiryDate.class,name = "date")
+        @JsonSubTypes.Type(value = InquiryDate.class, name = "date")
 })
 @ApiModel("答题方框，不包含问题")
 public interface AnswerCell {

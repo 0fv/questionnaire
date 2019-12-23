@@ -3,12 +3,14 @@ spring:
     restart:
       enabled: true
   profiles:
-    include: status,swagger
+    include: swagger,httpStatus
   application:
     name: questionnaire
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+    mapper:
+      default_view_inclusion: true
   redis:
     host: 127.0.0.1
     port: 6379

@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import space.nyuki.questionnaire.exception.CanNotEditException;
 import space.nyuki.questionnaire.exception.ElementNotFoundException;
 import space.nyuki.questionnaire.pojo.Questionnaire;
 import space.nyuki.questionnaire.utils.MapUtil;
@@ -74,6 +75,7 @@ public class QuestionnaireService {
      */
     @Transactional
     public void alterQuestionnaire(Questionnaire questionnaire) {
+        Questionnaire q = getQuestionnaireById(questionnaire.getId());
         Map<String, Object> map = MapUtil.objectToMap(questionnaire);
         Update update = new Update();
         map.forEach(update::set);
@@ -134,11 +136,20 @@ public class QuestionnaireService {
         return mongoTemplate.find(query, Questionnaire.class);
     }
 
+    /**
+     * 通过id查找问卷，并验证是否能够修改
+     * @param id
+     * @return
+     */
+
     public Questionnaire getQuestionnaireById(String id) {
         Questionnaire questionnaire = mongoTemplate.findOne(
                 query(Criteria.where("_id").is(id)),
                 Questionnaire.class
         );
+        if (questionnaire.getIsEdit() == 1) {
+            throw new CanNotEditException();
+        }
         if (Objects.nonNull(questionnaire)) {
             return questionnaire;
         } else {
@@ -146,10 +157,19 @@ public class QuestionnaireService {
         }
     }
 
+    /**
+     * 设置更新时间
+     * @param update
+     */
     private void setUpdateTime(Update update) {
         update.set("modify_time", new Date());
     }
 
+    /**
+     * 更新问卷内容
+     * @param id
+     * @param update
+     */
     public void setQuestionnaireUpdate(String id, Update update) {
         setUpdateTime(update);
         mongoTemplate.findAndModify(
@@ -159,4 +179,11 @@ public class QuestionnaireService {
         );
     }
 
+    public void reverseDeleteQuestionnaire(String id) {
+        Update update = new Update();
+        update.set("is_delete", 0);
+        update.set("modify_time", new Date());
+        mongoTemplate.findAndModify(query(Criteria.where("_id").is(id))
+                , update, Questionnaire.class);
+    }
 }
