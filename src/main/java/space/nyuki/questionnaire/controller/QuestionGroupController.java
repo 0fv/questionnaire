@@ -24,9 +24,10 @@ import space.nyuki.questionnaire.utils.ValidUtil;
 public class QuestionGroupController {
     @Autowired
     private QuestionGroupService questionGroupService;
+
     @ApiOperation("获取所有问题组")
     @GetMapping("{id}")
-    public TransData getQuestionGroup(@PathVariable(name = "id") String id){
+    public TransData getQuestionGroup(@PathVariable(name = "id") String id) {
         return TransFactory.getSuccessResponse(questionGroupService.getQuestionGroups(id));
     }
 
@@ -45,12 +46,24 @@ public class QuestionGroupController {
     @ApiOperation("修改现有问题组")
     @PutMapping("{id}/{gid}")
     @JsonView(GroupView.Update.class)
-    public TransData alterQuestionGroup(@PathVariable(name = "id") String id,
-                                        @PathVariable(name = "gid") Integer gid,
-                                        @RequestBody QuestionGroup questionGroup,
-                                        BindingResult bindingResult) {
+    public TransData alterQuestionGroup(
+            @PathVariable(name = "id") String id,
+            @PathVariable(name = "gid") Integer gid,
+            @RequestBody QuestionGroup questionGroup,
+            BindingResult bindingResult) {
         ValidUtil.valid(bindingResult);
         questionGroupService.alterQuestionGroup(id, gid, questionGroup);
+        return TransFactory.getSuccessResponse();
+    }
+
+    @ApiOperation("交换问题组位置")
+    @PutMapping("{id}/{gidA}/{gidB}")
+    public TransData swapQuestionGroup(
+        @PathVariable(name = "id") String id,
+        @PathVariable(name = "gidA")Integer gidA,
+        @PathVariable(name = "gidB") Integer gidB
+    ){
+        questionGroupService.swapQuestionGroup(id,gidA,gidB);
         return TransFactory.getSuccessResponse();
     }
 

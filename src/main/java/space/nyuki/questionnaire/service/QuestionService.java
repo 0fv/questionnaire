@@ -10,6 +10,7 @@ import space.nyuki.questionnaire.pojo.QuestionGroup;
 import space.nyuki.questionnaire.pojo.Questionnaire;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -64,6 +65,15 @@ public class QuestionService {
         List<QuestionCell> questionCells = questionGroup.getQuestionCells();
         questionCells.set(questionIndex,cell);
         questionGroup.setQuestionCells(questionCells);
+        questionGroupService.changeQuestionGroups(id,groupIndex,questionGroup,questionGroups);
+    }
+    @Transactional
+    public void swapQuestion(String id, int groupIndex, int qIndexA, int qIndexB){
+        Questionnaire questionnaire = questionnaireService.getQuestionnaireById(id);
+        List<QuestionGroup> questionGroups = questionnaire.getQuestionGroups();
+        QuestionGroup questionGroup = questionGroups.get(groupIndex);
+        List<QuestionCell> questionCells = questionGroup.getQuestionCells();
+        Collections.swap(questionCells,qIndexA,qIndexB);
         questionGroupService.changeQuestionGroups(id,groupIndex,questionGroup,questionGroups);
     }
 

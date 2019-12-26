@@ -44,7 +44,7 @@ public class MyExceptionHandler {
         if (Objects.isNull(msg)) {
             return TransFactory.getFailedResponse(c,e.getMessage());
         }
-        return TransFactory.getFailedResponse(c,msg);
+        return TransFactory.getFailedResponse(c,msg+" "+e.getMessage());
     }
     private String removeExceptionWord(String exceptionName){
         String[] split = exceptionName.split("\\.");

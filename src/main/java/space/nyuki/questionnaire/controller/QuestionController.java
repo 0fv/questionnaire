@@ -59,4 +59,16 @@ public class QuestionController {
         return TransFactory.getSuccessResponse();
     }
 
+    @ApiOperation("交换问题位置")
+    @PutMapping("{id}/{gid}/{qidA}/{qidB}")
+    public TransData swapQuestion(
+            @PathVariable(name = "id") String id,
+            @PathVariable(name = "gid")Integer gid,
+            @PathVariable(name = "qidA")Integer qidA,
+            @PathVariable(name = "qidB")Integer qidB
+    ){
+        questionService.swapQuestion(id,gid,qidA,qidB);
+        return TransFactory.getSuccessResponse();
+    }
+
 }

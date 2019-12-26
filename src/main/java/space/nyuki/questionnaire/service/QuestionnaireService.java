@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.nyuki.questionnaire.exception.CanNotEditException;
 import space.nyuki.questionnaire.exception.ElementNotFoundException;
+import space.nyuki.questionnaire.pojo.PageContainer;
 import space.nyuki.questionnaire.pojo.Questionnaire;
 import space.nyuki.questionnaire.utils.MapUtil;
 
@@ -111,12 +112,24 @@ public class QuestionnaireService {
      * @return
      */
 
-    public List<Questionnaire> getQuestionnaire(Integer page, Integer pageSize) {
+    public PageContainer getQuestionnaire(Integer page, Integer pageSize) {
+        Long total = getTotalNum();
         Query query = new Query();
         query.skip((page - 1) * pageSize);
         query.limit(pageSize);
         query.addCriteria(Criteria.where("is_delete").is(0));
-        return mongoTemplate.find(query, Questionnaire.class);
+        return new PageContainer(
+                page,
+                total,
+                (int) (total/pageSize+1),
+                mongoTemplate.find(query, Questionnaire.class)
+        );
+    }
+
+    public Long getTotalNum() {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("is_delete").is(0));
+        return mongoTemplate.count(query, Questionnaire.class);
     }
 
     /**
@@ -127,17 +140,24 @@ public class QuestionnaireService {
      * @param isEdit
      * @return
      */
-    public List<Questionnaire> getQuestionnaire(Integer page, Integer pageSize, Integer isEdit) {
+    public PageContainer getQuestionnaire(Integer page, Integer pageSize, Integer isEdit) {
+        Long total = getTotalNum();
         Query query = new Query();
         query.skip((page - 1) * pageSize);
         query.limit(pageSize);
         query.addCriteria(Criteria.where("is_delete").is(0));
         query.addCriteria(Criteria.where("is_edit").is(isEdit));
-        return mongoTemplate.find(query, Questionnaire.class);
+        return new PageContainer(
+                page,
+                total,
+                (int) (total/pageSize+1),
+                mongoTemplate.find(query, Questionnaire.class)
+        );
     }
 
     /**
      * 通过id查找问卷，并验证是否能够修改
+     *
      * @param id
      * @return
      */
@@ -159,6 +179,7 @@ public class QuestionnaireService {
 
     /**
      * 设置更新时间
+     *
      * @param update
      */
     private void setUpdateTime(Update update) {
@@ -167,6 +188,7 @@ public class QuestionnaireService {
 
     /**
      * 更新问卷内容
+     *
      * @param id
      * @param update
      */

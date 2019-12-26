@@ -11,6 +11,7 @@ import space.nyuki.questionnaire.exception.ElementNotFoundException;
 import space.nyuki.questionnaire.pojo.QuestionGroup;
 import space.nyuki.questionnaire.pojo.Questionnaire;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -65,6 +66,21 @@ public class QuestionGroupService {
         Update update = new Update();
         update.set("question_groups", questionGroups);
         questionnaireService.setQuestionnaireUpdate(id, update);
+    }
+    @Transactional
+    public void swapQuestionGroup(String id,int gidA,int gidB){
+        Questionnaire questionnaire = questionnaireService.getQuestionnaireById(id);
+        List<QuestionGroup> questionGroups = questionnaire.getQuestionGroups();
+        if (Objects.isNull(questionGroups)) {
+            throw new ElementNotFoundException("questionGroups");
+        } else {
+            Collections.swap(questionGroups,gidA,gidB);
+            Update update = new Update();
+            update.set("question_groups",questionGroups);
+            questionnaireService.setQuestionnaireUpdate(id,update);
+        }
+
+
     }
 
     /**
