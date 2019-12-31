@@ -125,6 +125,17 @@ public class QuestionnaireService {
                 mongoTemplate.find(query, Questionnaire.class)
         );
     }
+    public List<Questionnaire> getQuestionnaire() {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("is_delete").is(0));
+        return mongoTemplate.find(query,Questionnaire.class);
+    }
+    public  List<Questionnaire> getQuestionnaire(Integer isEdit) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("is_delete").is(0));
+        query.addCriteria(Criteria.where("is_edit").is(isEdit));
+        return mongoTemplate.find(query,Questionnaire.class);
+    }
 
     public Long getTotalNum() {
         Query query = new Query();

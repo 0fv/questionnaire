@@ -14,6 +14,8 @@ import space.nyuki.questionnaire.pojo.TransData;
 import space.nyuki.questionnaire.service.QuestionnaireService;
 import space.nyuki.questionnaire.utils.ValidUtil;
 
+import java.util.Objects;
+
 /**
  * @author ning
  * @createTime 12/1/19 4:13 PM
@@ -45,9 +47,10 @@ public class QuestionnaireController {
         questionnaireService.deleteQuestionnaire(id);
         return TransFactory.getSuccessResponse();
     }
+
     @ApiOperation("还原被删除问卷调查表")
     @GetMapping("reverse/{id}")
-    public TransData reverseDeletedQuestionnaire(@PathVariable String id){
+    public TransData reverseDeletedQuestionnaire(@PathVariable String id) {
         questionnaireService.reverseDeleteQuestionnaire(id);
         return TransFactory.getSuccessResponse();
     }
@@ -68,24 +71,32 @@ public class QuestionnaireController {
     @GetMapping
     @JsonView(GroupView.View.class)
     public TransData getQuestionnaire(
-            @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize,
-            @RequestParam(name = "isEdit", required = false,defaultValue = "-1") Integer isEdit
+            @RequestParam(name = "page", required = false) Integer page,
+            @RequestParam(name = "pageSize", required = false) Integer pageSize,
+            @RequestParam(name = "isEdit", required = false, defaultValue = "-1") Integer isEdit
     ) {
-        if (isEdit.equals(-1)){
+        if (Objects.isNull(page)) {
+            if (isEdit.equals(-1)) {
+                return TransFactory.getSuccessResponse(questionnaireService.getQuestionnaire());
+            } else {
+                return TransFactory.getSuccessResponse(questionnaireService.getQuestionnaire(isEdit));
+            }
+        }
+        if (isEdit.equals(-1)) {
             return TransFactory.getSuccessResponse(questionnaireService.getQuestionnaire(page, pageSize));
-        }else{
-            return TransFactory.getSuccessResponse(questionnaireService.getQuestionnaire(page,pageSize,isEdit));
+        } else {
+            return TransFactory.getSuccessResponse(questionnaireService.getQuestionnaire(page, pageSize, isEdit));
         }
 
     }
+
     @ApiOperation("更改编辑状态")
     @GetMapping("edit/")
     public TransData changeEditStatus(
-            @RequestParam(name = "id",required = true) String id,
-            @RequestParam(name = "isEdit",required = true) Integer isEdit
-    ){
-        questionnaireService.editChange(id,isEdit);
+            @RequestParam(name = "id", required = true) String id,
+            @RequestParam(name = "isEdit", required = true) Integer isEdit
+    ) {
+        questionnaireService.editChange(id, isEdit);
         return TransFactory.getSuccessResponse();
     }
 
