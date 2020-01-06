@@ -11,7 +11,8 @@ import io.swagger.annotations.ApiModel;
  */
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.WRAPPER_OBJECT
+        property = "type",
+        include = JsonTypeInfo.As.PROPERTY
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Choice.class, name = "choice"),
