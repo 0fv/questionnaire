@@ -11,10 +11,10 @@ import java.util.Objects;
  * @description 将pojo 转为map形式 去除空值，方便更新
  */
 public class MapUtil {
-    public static Map<String,Object> objectToMap(Object o){
-        ObjectMapper m = new ObjectMapper();
-        Map<String,Object> props = m.convertValue(o, Map.class);
-        props.values().removeIf(Objects::isNull);
-        return props;
-    }
+	public static Map<String, Object> objectToMap(Object o) {
+		ObjectMapper m = new ObjectMapper();
+		Map<String, Object> props = m.convertValue(o, Map.class);
+		props.values().removeIf(Objects::isNull);
+		return props;
+	}
 }

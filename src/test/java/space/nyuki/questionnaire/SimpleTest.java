@@ -1,6 +1,9 @@
 package space.nyuki.questionnaire;
 
 import org.junit.jupiter.api.Test;
+import space.nyuki.questionnaire.pojo.Permission;
+import space.nyuki.questionnaire.pojo.User;
+import space.nyuki.questionnaire.utils.MapUtil;
 
 /**
  * @author ning
@@ -19,5 +22,13 @@ public class SimpleTest {
         int x = length - length1;
         System.out.println(s.substring(0, x));
 
+    }
+    @Test
+    public void test2(){
+        User user = new User();
+        user.setId("d");
+        Permission permission = new Permission();
+        user.setPermission(permission);
+        System.out.println(MapUtil.objectToMap(user));
     }
 }

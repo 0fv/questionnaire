@@ -16,3 +16,15 @@ HttpMessageNotReadable:
 CanNotEdit:
   code: 4006
   msg: 当前状态不能编辑，请切换其编辑状态
+UserExists:
+  code: 4007
+  msg: 当前用户名已存在
+Authentication:
+  code: 4008
+  msg: 认证失败，请检查用户名或密码
+Unauthenticated:
+  code: 4009
+  msg: 认证失败
+AuthenticationFailed:
+  code: 4009
+  msg: 访问被拒绝，请检查权限

@@ -1,6 +1,9 @@
 package space.nyuki.questionnaire.pojo;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -38,7 +41,7 @@ public class Questionnaire {
     )
     private String id;
     @Field("name")
-    @ApiModelProperty(value = "问卷调查大标题",example = "xxx调查")
+    @ApiModelProperty(value = "问卷调查大标题", example = "xxx调查")
     @NotNull(
             message = "标题不能为空",
             groups = {GroupView.Create.class
@@ -51,22 +54,22 @@ public class Questionnaire {
     })
     private String name;
     @Field("introduce")
-    @ApiModelProperty(value = "介绍相关内容",example = "为了xxxxxx")
+    @ApiModelProperty(value = "介绍相关内容", example = "为了xxxxxx")
     @JsonView({
             GroupView.View.class,
             GroupView.Update.class,
             GroupView.Create.class
     })
     private String introduce;
-    @ApiModelProperty(value = "uuid",example = "1ae52095-e465-4492-8c0b-15399889b9c7")
+    @ApiModelProperty(value = "uuid", example = "1ae52095-e465-4492-8c0b-15399889b9c7")
     @NotNull(
-            message="UUID不能为空",
+            message = "UUID不能为空",
             groups = {GroupView.Create.class}
     )
     @Pattern(
-            regexp = "[0-9|a-z|A-Z]{8}-[0-9|a-z|A-Z]{4}"+
-            "-[0-9|a-z|A-Z]{4}-[0-9|a-z|A-Z]{4}"+
-            "-[0-9|a-z|A-Z]{12}",
+            regexp = "[0-9|a-z|A-Z]{8}-[0-9|a-z|A-Z]{4}" +
+                    "-[0-9|a-z|A-Z]{4}-[0-9|a-z|A-Z]{4}" +
+                    "-[0-9|a-z|A-Z]{12}",
             message = "uuid 格式不规范",
             groups = {GroupView.Create.class}
     )
@@ -81,6 +84,14 @@ public class Questionnaire {
     @Field("created_time")
     @JsonProperty("created_time")
     private Date createdTime;
+    @JsonView(GroupView.View.class)
+    @Field("created_account")
+    @JsonProperty("created_account")
+    private String createdAccount;
+    @JsonView(GroupView.View.class)
+    @Field("last_modify_account")
+    @JsonProperty("last_modify_account")
+    private String lastModifyAccount;
     @JsonView({
             GroupView.View.class,
     })

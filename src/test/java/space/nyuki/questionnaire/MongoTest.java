@@ -24,16 +24,18 @@ public class MongoTest {
     private QuestionnaireService questionnaireService;
     @Autowired
     private MongoTemplate mongoTemplate;
+
     @Test
-    public void test1(){
+    public void test1() {
         Questionnaire questionnaire = new Questionnaire();
         questionnaire.setName("nihaox");
         questionnaire.setIntroduce("buhao");
         questionnaire.setUuid("dee11d4e-63c6-4d90-983c-5a9f1e79e96c");
         questionnaireService.createQuestionnaire(questionnaire);
     }
+
     @Test
-    public void test2(){
+    public void test2() {
         Questionnaire questionnaire = new Questionnaire();
         questionnaire.setName("nihaox");
         questionnaire.setIntroduce("buhao");
@@ -41,18 +43,25 @@ public class MongoTest {
         Map<String, Object> stringObjectMap = MapUtil.objectToMap(questionnaire);
         System.out.println(stringObjectMap);
     }
+
     @Test
-    public void test3(){
+    public void test3() {
         questionnaireService.deleteQuestionnaire("5de3751ba517897f3d3286b0");
     }
+
     @Test
-    public void test4(){
+    public void test4() {
         Query id = Query.query(Criteria.where("_id").is(new ObjectId("5de3751ba517897f3d3286b0")));
         Questionnaire one = mongoTemplate.findOne(id, Questionnaire.class);
         System.out.println(one);
         one.setIntroduce("sdfsdf");
     }
+
     @Test
-    public void test5(){
+    public void test5() {
+        String x = "sfsf";
+        String y = "sefsf";
+        String q = "sdfsf";
+
     }
 }

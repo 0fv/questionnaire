@@ -8,7 +8,9 @@ import space.nyuki.questionnaire.pojo.answer.Comment;
 import space.nyuki.questionnaire.pojo.answer.InquiryDate;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,7 +23,7 @@ public class TemplateConfig {
     @Bean("answerCells")
     public Map<String, AnswerCell> answerCells(){
         Map<String,AnswerCell> AnswerCells = new HashMap<>();
-        Map<String,Boolean> mp = new HashMap<>();
+        List<String> mp = new ArrayList<>();
         AnswerCells.put("choice",new Choice(mp,false));
         AnswerCells.put("comment",new Comment(""));
         AnswerCells.put("date",new InquiryDate(new Timestamp(System.currentTimeMillis())));

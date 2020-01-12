@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import space.nyuki.questionnaire.group.GroupView;
 
 import javax.validation.constraints.NotNull;
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author ning
@@ -29,7 +29,7 @@ public class Choice implements AnswerCell {
             }
     )
     @ApiModelProperty(value = "选项以及答案",example = "{\"选择?\",\"true\"}")
-    private Map<String, Boolean> choice;
+    private List<String> choice;
     @NotNull(
             message = "请选择是否为多选",
             groups = {

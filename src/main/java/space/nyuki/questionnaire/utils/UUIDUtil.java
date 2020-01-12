@@ -8,8 +8,8 @@ import java.util.UUID;
  * @description 生成uuid
  */
 public class UUIDUtil {
-    public static String getUUID32(){
-        return UUID.randomUUID().toString().replace("-", "").toLowerCase();
+	public static String getUUID32() {
+		return UUID.randomUUID().toString().replace("-", "").toLowerCase();
 
-    }
+	}
 }

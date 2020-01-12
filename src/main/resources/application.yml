@@ -10,13 +10,13 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
     mapper:
-      default_view_inclusion: true
+      default_view_inclusion: false
   redis:
     host: 127.0.0.1
     port: 6379
   data:
     mongodb:
-      uri: mongodb://admin:admin@127.0.0.1/question
+      uri: mongodb://127.0.0.1/question
 
 server:
   port: 8000
