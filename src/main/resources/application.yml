@@ -11,6 +11,7 @@ spring:
     time-zone: GMT+8
     mapper:
       default_view_inclusion: false
+    default-property-inclusion: non_null
   redis:
     host: 127.0.0.1
     port: 6379
