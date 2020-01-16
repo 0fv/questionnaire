@@ -8,16 +8,18 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import space.nyuki.questionnaire.group.GroupView;
+import space.nyuki.questionnaire.pojo.answer.AnswerCell;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Document(collection = "question_collection")
 @Data
 @ApiModel("问题收藏")
 public class QuestionCollection {
 	@Id
-	@JsonProperty("_id")
+	@JsonProperty("id")
 	@JsonView({
 			GroupView.View.class,
 			GroupView.Update.class
@@ -29,33 +31,63 @@ public class QuestionCollection {
 	)
 	private String id;
 	@Field("created_time")
+	@JsonView({
+			GroupView.View.class,
+	})
 	@JsonProperty("created_time")
 	private Date createdDate;
 	@Field("created_account")
 	@JsonProperty("created_account")
+	@JsonView({
+			GroupView.View.class
+	})
 	private String createdAccount;
-
+	@JsonView({
+			GroupView.View.class
+	})
 	@Field("edited_time")
 	@JsonProperty("edited_time")
 	private Date editedDate;
-
+	@JsonView({
+			GroupView.View.class
+	})
 	@Field("edited_account")
 	@JsonProperty("edited_account")
 	private String editedAccount;
 
-	@Field("question_cell")
-	@JsonProperty("question_cell")
+	@JsonView({
+			GroupView.Create.class,
+			GroupView.View.class
+	})
+
+	private String title;
+	@Field("answer_cells")
+	@JsonProperty("answer_cells")
 	@NotNull(
-			message = "问题不能为空",
+			message = "标题不能为空",
 			groups = {
 					GroupView.Create.class,
 					GroupView.Update.class
 			}
 	)
-	private QuestionCell questionCell;
+	@JsonView({
+			GroupView.Create.class
+	})
 
+	private List<AnswerCell> answerCells;
+	@JsonView({
+			GroupView.Create.class,
+			GroupView.View.class
+			})
+
+	@NotNull(
+			message = "分类不能为空",
+			groups = {
+					GroupView.Create.class,
+					GroupView.Update.class
+			}
+	)
 	private String classification;
-	private String type;
 	@Field("is_delete")
 	@JsonProperty("is_delete")
 	private int isDelete;

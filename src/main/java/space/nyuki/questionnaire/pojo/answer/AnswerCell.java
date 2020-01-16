@@ -2,6 +2,7 @@ package space.nyuki.questionnaire.pojo.answer;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModel;
 
 /**
@@ -20,5 +21,6 @@ import io.swagger.annotations.ApiModel;
         @JsonSubTypes.Type(value = InquiryDate.class, name = "date")
 })
 @ApiModel("答题方框，不包含问题")
+@JsonView(Object.class)
 public interface AnswerCell {
 }

@@ -1,9 +1,11 @@
 package space.nyuki.questionnaire.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import space.nyuki.questionnaire.factory.TransFactory;
+import space.nyuki.questionnaire.group.GroupView;
 import space.nyuki.questionnaire.pojo.QuestionCollection;
 import space.nyuki.questionnaire.pojo.TransData;
 import space.nyuki.questionnaire.service.QuestionCollectionService;
@@ -16,6 +18,7 @@ public class QuestionCollectionController {
 	private QuestionCollectionService questionCollectionService;
 
 	@GetMapping
+	@JsonView(GroupView.View.class)
 	public TransData getData() {
 		return TransFactory.getSuccessResponse(questionCollectionService.getQuestionCollection());
 	}
@@ -26,9 +29,14 @@ public class QuestionCollectionController {
 	}
 
 	@PostMapping
-	public TransData addData(@RequestBody QuestionCollection questionCollection,
-	                         @RequestHeader(name = "token") String token,
-	                         BindingResult result) {
+
+	public TransData addData(
+			@JsonView({
+					GroupView.Create.class
+			})
+			@RequestBody QuestionCollection questionCollection,
+			@RequestHeader(name = "token") String token,
+			BindingResult result) {
 		ValidUtil.valid(result);
 		questionCollectionService.add(questionCollection, token);
 		return TransFactory.getSuccessResponse();
@@ -37,9 +45,9 @@ public class QuestionCollectionController {
 	@PutMapping
 	public TransData update(@RequestBody QuestionCollection questionCollection,
 	                        @RequestHeader(name = "token") String token,
-			                        BindingResult result) {
+	                        BindingResult result) {
 		ValidUtil.valid(result);
-		questionCollectionService.update(questionCollection,token);
+		questionCollectionService.update(questionCollection, token);
 		return TransFactory.getSuccessResponse();
 	}
 
