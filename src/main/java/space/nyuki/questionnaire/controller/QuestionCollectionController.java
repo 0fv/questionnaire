@@ -24,6 +24,7 @@ public class QuestionCollectionController {
 	}
 
 	@GetMapping("{id}")
+	@JsonView(GroupView.Input.class)
 	public TransData getDataById(@PathVariable(name = "id") String id) {
 		return TransFactory.getSuccessResponse(questionCollectionService.getQuestionCollectionById(id));
 	}
@@ -43,7 +44,11 @@ public class QuestionCollectionController {
 	}
 
 	@PutMapping
-	public TransData update(@RequestBody QuestionCollection questionCollection,
+	public TransData update(
+			@JsonView({
+					GroupView.Input.class
+			})
+			@RequestBody QuestionCollection questionCollection,
 	                        @RequestHeader(name = "token") String token,
 	                        BindingResult result) {
 		ValidUtil.valid(result);

@@ -22,7 +22,8 @@ public class QuestionCollection {
 	@JsonProperty("id")
 	@JsonView({
 			GroupView.View.class,
-			GroupView.Update.class
+			GroupView.Update.class,
+			GroupView.Input.class
 	})
 	@NotNull(
 			message = "id不能为空",
@@ -32,7 +33,7 @@ public class QuestionCollection {
 	private String id;
 	@Field("created_time")
 	@JsonView({
-			GroupView.View.class,
+			GroupView.View.class
 	})
 	@JsonProperty("created_time")
 	private Date createdDate;
@@ -57,27 +58,29 @@ public class QuestionCollection {
 
 	@JsonView({
 			GroupView.Create.class,
-			GroupView.View.class
+			GroupView.View.class,
+			GroupView.Input.class
 	})
 
 	private String title;
 	@Field("answer_cells")
 	@JsonProperty("answer_cells")
 	@NotNull(
-			message = "标题不能为空",
+			message = "内容不能为空",
 			groups = {
 					GroupView.Create.class,
-					GroupView.Update.class
 			}
 	)
 	@JsonView({
-			GroupView.Create.class
+			GroupView.Create.class,
+			GroupView.Input.class
 	})
 
 	private List<AnswerCell> answerCells;
 	@JsonView({
 			GroupView.Create.class,
-			GroupView.View.class
+			GroupView.View.class,
+			GroupView.Input.class
 			})
 
 	@NotNull(

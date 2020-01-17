@@ -1,6 +1,5 @@
 package space.nyuki.questionnaire.pojo.answer;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -20,13 +19,15 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel("答题方框--日期框")
-public class InquiryDate implements AnswerCell{
-    @ApiModelProperty(value = "日期内容", example = "1996-07-01")
-    @NotNull(
-            message = "日期不能为空",
-            groups = {
-                    GroupView.Input.class
-            }
-    )
-    private Timestamp date;
+public class InquiryDate implements AnswerCell {
+	@ApiModelProperty(value = "日期内容", example = "1996-07-01")
+	@NotNull(
+			message = "日期不能为空",
+			groups = {
+					GroupView.Input.class
+			}
+	)
+	private Timestamp date;
+	private Boolean vdate;
+	private Boolean vtime;
 }

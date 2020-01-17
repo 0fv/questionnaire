@@ -25,7 +25,7 @@ public class QuestionCollectionService {
 	}
 
 	public QuestionCollection getQuestionCollectionById(String id) {
-		return mongoTemplate.findOne(Query.query(Criteria.where("_id")), QuestionCollection.class);
+		return mongoTemplate.findOne(Query.query(Criteria.where("_id").is(id)), QuestionCollection.class);
 	}
 
 	@Transactional
@@ -45,6 +45,7 @@ public class QuestionCollectionService {
 		Map<String, Object> stringObjectMap = MapUtil.objectToMap(questionCollection);
 		Update update = new Update();
 		stringObjectMap.forEach(update::set);
+		update.set("answer_cells", questionCollection.getAnswerCells());
 		mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(id)), update, QuestionCollection.class);
 	}
 

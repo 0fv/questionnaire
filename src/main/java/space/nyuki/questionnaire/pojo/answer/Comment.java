@@ -19,12 +19,15 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @ApiModel("答题方框--自填框")
 public class Comment implements AnswerCell {
-    @ApiModelProperty(value = "自填框内容",example = "我发功出自内心")
-    @NotNull(
-            message = "评论不能为null",
-            groups = {
-                    GroupView.Input.class
-            }
-    )
-    private String comment;
+	@ApiModelProperty(value = "自填框内容", example = "我发功出自内心")
+	@NotNull(
+			message = "评论不能为null",
+			groups = {
+					GroupView.Input.class
+			}
+	)
+	private String comment;
+	private Integer limit;
+	private Integer line;
+	private Boolean empty;
 }
