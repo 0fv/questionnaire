@@ -2,6 +2,7 @@ package space.nyuki.questionnaire.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -22,6 +23,9 @@ import java.util.List;
 //@JsonDeserialize
 @Data
 @ApiModel("问答方框")
+@JsonView({
+        Object.class
+})
 public class QuestionCell {
     @NotNull(
             message = "标题不能为空",
