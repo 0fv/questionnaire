@@ -18,19 +18,16 @@ import java.util.List;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiModel("问题组")
+@JsonView(
+        Object.class
+)
 public class QuestionGroup {
     @NotNull(
             message = "问题组名不能为空",
             groups = {GroupView.Create.class}
     )
-    @JsonView(
-            {GroupView.Update.class,
-            GroupView.Create.class}
-    )
-    @JsonProperty("group_name")
-    @Field("group_name")
     @ApiModelProperty(value="问题组名",example = "xxx问题组")
-    private String groupName;
+    private String title;
     @ApiModelProperty(value = "问题组成员",example = "sdfsf")
     @Field("question_cells")
     @JsonProperty("question_cells")
