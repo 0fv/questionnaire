@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import space.nyuki.questionnaire.group.GroupView;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -21,49 +22,79 @@ public class User {
 	@JsonView({
 			GroupView.View.class,
 			GroupView.Update.class,
-			GroupView.Get.class
+			GroupView.LoginInfo.class,
+			GroupView.UpdatePass.class,
+			GroupView.GetById.class,
+			GroupView.UpdateAccess.class
 	})
-	@NotNull(
+	@NotBlank(
 			message = "id不能为空",
 			groups = {
-					GroupView.Update.class
+					GroupView.Update.class,
+					GroupView.UpdateAccess.class,
+					GroupView.UpdatePass.class
 			}
 	)
 	private String id;
-	@NotNull(
+	@NotBlank(
 			message = "用户名不能为空",
 			groups = {
-					GroupView.Create.class
+					GroupView.Create.class,
+					GroupView.Login.class
 			}
 	)
 	@JsonView({
 			GroupView.View.class,
-			GroupView.Get.class
+			GroupView.Create.class,
+			GroupView.Login.class,
+			GroupView.LoginInfo.class,
+			GroupView.GetById.class
 			})
 	private String username;
-	@NotNull(
+	@NotBlank(
 			message = "密码不能为空",
 			groups = {
-					GroupView.Create.class
+					GroupView.Create.class,
+					GroupView.Login.class,
+					GroupView.UpdatePass.class
 			}
 	)
+	@JsonView({
+			GroupView.Create.class,
+			GroupView.Login.class,
+			GroupView.UpdatePass.class,
+	})
 	private String passwd;
 	@JsonView({
 			GroupView.View.class
+
 	})
 	@JsonProperty("created_time")
 	@Field("created_time")
 	private Date createdTime;
 	@JsonView({
-			GroupView.View.class
+			GroupView.View.class,
+			GroupView.LoginInfo.class
 	})
 	@JsonProperty("last_login")
 	@Field("last_login")
 	private Date lastLogin;
+
 	@JsonView({
-			GroupView.Get.class
+			GroupView.LoginInfo.class,
+			GroupView.Create.class,
+			GroupView.GetById.class,
+			GroupView.UpdateAccess.class
 	})
+	@NotNull(
+			message = "权限设置不能为空",
+			groups = {
+					GroupView.Create.class,
+					GroupView.UpdateAccess.class
+			}
+	)
 	private Permission permission;
+
 	@JsonProperty("is_delete")
 	@Field("is_delete")
 	// 1 已删除 0 未删除
@@ -71,6 +102,7 @@ public class User {
 	@JsonProperty("is_super")
 	@Field("is_super")
 	@JsonView({
+			GroupView.LoginInfo.class,
 			GroupView.View.class
 	})
 	// 1 管理员 0 不是

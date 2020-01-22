@@ -8,7 +8,10 @@ import space.nyuki.questionnaire.group.GroupView;
 
 @Data
 @JsonView({
-		GroupView.Get.class
+		GroupView.LoginInfo.class,
+		GroupView.Create.class,
+		GroupView.GetById.class,
+		GroupView.UpdateAccess.class
 })
 public class Permission {
 	private boolean questionnaire;

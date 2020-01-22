@@ -12,7 +12,6 @@ import space.nyuki.questionnaire.group.GroupView;
 import space.nyuki.questionnaire.pojo.Questionnaire;
 import space.nyuki.questionnaire.pojo.TransData;
 import space.nyuki.questionnaire.service.QuestionnaireService;
-import space.nyuki.questionnaire.utils.ValidUtil;
 
 import java.util.Objects;
 
@@ -32,11 +31,10 @@ public class QuestionnaireController {
 	@ApiOperation("创建问卷调查表")
 	@PostMapping
 	public TransData createQuestionnaire(
+			@RequestHeader(name = "token") String token,
 			@Validated(GroupView.Create.class)
 			@JsonView(GroupView.Create.class) @RequestBody Questionnaire questionnaire,
-			@RequestHeader(name = "token") String token,
 			BindingResult bindingResult) {
-		ValidUtil.valid(bindingResult);
 		questionnaireService.createQuestionnaire(questionnaire, token);
 		return TransFactory.getSuccessResponse();
 	}
@@ -64,12 +62,11 @@ public class QuestionnaireController {
 	@ApiOperation("修改问卷调查表")
 	@PutMapping
 	public TransData alterQuestionnaire(
+			@RequestHeader(name="token") String token,
 			@JsonView(GroupView.Update.class)
 			@Validated(GroupView.Update.class)
 			@RequestBody Questionnaire questionnaire,
-			@RequestHeader(name="token") String token,
 			BindingResult bindingResult) {
-		ValidUtil.valid(bindingResult);
 		questionnaireService.alterQuestionnaire(questionnaire,token);
 		return TransFactory.getSuccessResponse();
 	}

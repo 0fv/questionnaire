@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import space.nyuki.questionnaire.group.GroupView;
 import space.nyuki.questionnaire.pojo.answer.AnswerCell;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
@@ -23,9 +24,9 @@ public class QuestionCollection {
 	@JsonView({
 			GroupView.View.class,
 			GroupView.Update.class,
-			GroupView.Input.class
+			GroupView.GetById.class
 	})
-	@NotNull(
+	@NotBlank(
 			message = "id不能为空",
 			groups = {GroupView.Update.class
 			}
@@ -59,9 +60,16 @@ public class QuestionCollection {
 	@JsonView({
 			GroupView.Create.class,
 			GroupView.View.class,
-			GroupView.Input.class
+			GroupView.Update.class,
+			GroupView.GetById.class
 	})
-
+	@NotBlank(
+			groups = {
+					GroupView.Create.class,
+					GroupView.Update.class
+			},
+			message = "问题标题不能为空"
+	)
 	private String title;
 	@Field("answer_cells")
 	@JsonProperty("answer_cells")
@@ -69,21 +77,24 @@ public class QuestionCollection {
 			message = "内容不能为空",
 			groups = {
 					GroupView.Create.class,
+					GroupView.Update.class,
 			}
 	)
 	@JsonView({
 			GroupView.Create.class,
-			GroupView.Input.class
+			GroupView.GetById.class,
+			GroupView.Update.class,
 	})
 
 	private List<AnswerCell> answerCells;
 	@JsonView({
 			GroupView.Create.class,
 			GroupView.View.class,
-			GroupView.Input.class
+			GroupView.Update.class,
+			GroupView.GetById.class
 			})
 
-	@NotNull(
+	@NotBlank(
 			message = "分类不能为空",
 			groups = {
 					GroupView.Create.class,

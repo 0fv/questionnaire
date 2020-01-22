@@ -63,11 +63,10 @@ public class ShiroConfig {
 	 *
 	 * @return
 	 */
-	@Bean(name = "lifecycleBeanPostProcessor")
-	public static LifecycleBeanPostProcessor getLifecycleBeanPostProcessor() {
+	@Bean("lifecycleBeanPostProcessor")
+	public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
 		return new LifecycleBeanPostProcessor();
 	}
-
 	/**
 	 * 开启代理对象
 	 *
@@ -82,10 +81,7 @@ public class ShiroConfig {
 		return defaultAdvisorAutoProxyCreator;
 	}
 
-	@Bean("lifecycleBeanPostProcessor")
-	public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
-		return new LifecycleBeanPostProcessor();
-	}
+
 
 	@Bean
 	public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(DefaultWebSecurityManager securityManager) {

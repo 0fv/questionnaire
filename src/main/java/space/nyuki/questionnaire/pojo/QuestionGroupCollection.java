@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import space.nyuki.questionnaire.group.GroupView;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +20,8 @@ public class QuestionGroupCollection {
 	@JsonProperty("id")
 	@JsonView({
 			GroupView.View.class,
-			GroupView.Input.class
+			GroupView.GetById.class,
+			GroupView.Update.class
 	})
 	@NotNull(
 			message = "id不能为空",
@@ -56,8 +58,16 @@ public class QuestionGroupCollection {
 	@JsonView({
 			GroupView.Create.class,
 			GroupView.View.class,
-			GroupView.Input.class
+			GroupView.Update.class,
+			GroupView.GetById.class
 	})
+	@NotBlank(
+			message = "标题不能为空",
+			groups = {
+					GroupView.Create.class,
+					GroupView.Update.class
+			}
+	)
 	private String title;
 	@Field("question_cells")
 	@JsonProperty("question_cells")
@@ -69,17 +79,19 @@ public class QuestionGroupCollection {
 	)
 	@JsonView({
 			GroupView.Create.class,
-			GroupView.Input.class
+			GroupView.GetById.class,
+			GroupView.Update.class
 	})
 
 	private List<QuestionCell> questionCells;
 	@JsonView({
 			GroupView.Create.class,
 			GroupView.View.class,
-			GroupView.Input.class
+			GroupView.Update.class,
+			GroupView.GetById.class
 	})
 
-	@NotNull(
+	@NotBlank(
 			message = "分类不能为空",
 			groups = {
 					GroupView.Create.class,
