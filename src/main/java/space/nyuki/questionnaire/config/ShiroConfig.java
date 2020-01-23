@@ -6,6 +6,7 @@ import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
@@ -21,11 +22,16 @@ import java.util.Map;
 @Configuration
 public class ShiroConfig {
 	@Bean
+	public BasicHttpAuthenticationFilter tokenFilter() {
+		return new TokenFilter();
+	}
+
+	@Bean("realm")
 	public Realm getRealm() {
 		return new MyRealm();
 	}
 
-	@Bean("securityManager")
+	@Bean
 	public DefaultWebSecurityManager getDefaultWebSecurityManager(Realm realm) {
 		DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
 		defaultWebSecurityManager.setRealm(realm);
@@ -37,12 +43,12 @@ public class ShiroConfig {
 		return defaultWebSecurityManager;
 	}
 
-	@Bean("shiroFilter")
+	@Bean("shiroFilterFactoryBean")
 	public ShiroFilterFactoryBean getShiroFilterFactoryBean(DefaultWebSecurityManager defaultWebSecurityManager) {
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
 		shiroFilterFactoryBean.setSecurityManager(defaultWebSecurityManager);
 		HashMap<String, Filter> filterHashMap = new HashMap<>();
-		filterHashMap.put("jwt", new TokenFilter());
+		filterHashMap.put("jwt", tokenFilter());
 		shiroFilterFactoryBean.setFilters(filterHashMap);
 		Map<String, String> rules = new HashMap<>();
 		rules.put("/login", "anon");
@@ -51,7 +57,8 @@ public class ShiroConfig {
 		rules.put("/webjars/**", "anon");
 		rules.put("/v2/**", "anon");
 		rules.put("/csrf", "anon");
-		//to-do change to jwt3
+		//to-do change to jwt
+//		rules.put("/**", "jwt");
 		rules.put("/**", "anon");
 		shiroFilterFactoryBean.setLoginUrl("/login");
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(rules);
@@ -67,6 +74,7 @@ public class ShiroConfig {
 	public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
 		return new LifecycleBeanPostProcessor();
 	}
+
 	/**
 	 * 开启代理对象
 	 *
@@ -80,7 +88,6 @@ public class ShiroConfig {
 		defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
 		return defaultAdvisorAutoProxyCreator;
 	}
-
 
 
 	@Bean

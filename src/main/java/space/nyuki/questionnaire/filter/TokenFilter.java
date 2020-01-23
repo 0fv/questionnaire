@@ -54,8 +54,8 @@ public class TokenFilter extends BasicHttpAuthenticationFilter {
 	 * @param mappedValue
 	 * @return
 	 */
-	@SneakyThrows
 	@Override
+	@SneakyThrows
 	protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
 		if (isLoginAttempt(request, response)) {
 			if (executeLogin(request, response)) {
@@ -63,7 +63,6 @@ public class TokenFilter extends BasicHttpAuthenticationFilter {
 			}
 		}
 		HttpServletRequest r = (HttpServletRequest) request;
-		System.out.println(r.getRequestURL().toString());
 		r.getRequestDispatcher("/authenticationFailed").forward(request,response);
 		return false;
 	}

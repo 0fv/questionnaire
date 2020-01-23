@@ -86,7 +86,8 @@ public class UserService {
 	}
 
 	public User getUserByUserName(String username) {
-		return mongoTemplate.findOne(Query.query(Criteria.where("username").is(username)), User.class);
+		return mongoTemplate.findOne(
+				Query.query(Criteria.where("username").is(username).and("is_delete").is(0)), User.class);
 	}
 
 
