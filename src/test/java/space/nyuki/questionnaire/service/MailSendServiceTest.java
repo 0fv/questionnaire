@@ -6,14 +6,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import space.nyuki.questionnaire.pojo.*;
+import space.nyuki.questionnaire.pojo.MailInfo;
+import space.nyuki.questionnaire.pojo.Member;
+import space.nyuki.questionnaire.pojo.QuestionnaireEntity;
 
 import java.util.Date;
 
 @SpringBootTest
 class MailSendServiceTest {
 	@Autowired
-	private MailSendService mailSendService;
+	private MailSenderService mailSenderService;
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
@@ -26,26 +28,13 @@ class MailSendServiceTest {
 	public void setMailInfoToDB() {
 		MailInfo mailInfo = new MailInfo();
 		mailInfo.setId("mailInfo");
-		mailInfo.setHost("ffffffff");
+		mailInfo.setHost("smtp.exmail.qq.com");
 		mailInfo.setPort(25);
-		mailInfo.setUsername("ffffffffff");
-		mailInfo.setPassword("fffffffff");
-		mailInfo.setFrom("ffffffffff");
+		mailInfo.setUsername("email");
+		mailInfo.setPassword("email");
+		mailInfo.setFrom("email");
 		mailInfo.setProtocol("smtp");
-		mailSendService.setMailInfoToDB(mailInfo);
-	}
-	@Test
-	public void setBaseUrl(){
-		BaseUrl baseUrl = new BaseUrl();
-		baseUrl.setId("url");
-		baseUrl.setUrl("http://www.nindgsss.com");
-		mailSendService.setBaseUrl(baseUrl);
-	}
-
-
-	@Test
-	void setMailTemplate() {
-		String content="<html>\n" +
+		String content = "<html>\n" +
 				"<body>\n" +
 				"    <h3>hello world ! 这是一封Html邮件!${name}</h3>\n" +
 				"    <h3>hello world ! 这是一封Html邮件!${title}</h3>\n" +
@@ -54,10 +43,9 @@ class MailSendServiceTest {
 				"    <h3>hello world ! 这是一封Html邮件!${url}</h3>\n" +
 				"</body>\n" +
 				"</html>";
-		MailTemplate mailTemplate = new MailTemplate();
-		mailTemplate.setId("mailTemplate");
-		mailTemplate.setTemplate(content);
-		mailSendService.setMailTemplate(mailTemplate);
+		mailInfo.setSubject("测试");
+		mailInfo.setTemplate(content);
+		mailSenderService.setMailInfo(mailInfo);
 	}
 
 	@Test
@@ -65,12 +53,12 @@ class MailSendServiceTest {
 		Member member = new Member();
 		member.setEigenvalue("sdfadfasdfaff");
 		member.setName("ning");
-		member.setEmail("adsfasdfasdf");
+		member.setEmail("email");
 		QuestionnaireEntity questionnaireEntity = new QuestionnaireEntity();
 		questionnaireEntity.setFrom(new Date());
 		questionnaireEntity.setTitle("nihao");
 		questionnaireEntity.setTo(new Date());
 		questionnaireEntity.setId("adfafdafdadsf");
-		mailSendService.sendMail(member,questionnaireEntity);
+		mailSenderService.sendMail(member, questionnaireEntity);
 	}
 }

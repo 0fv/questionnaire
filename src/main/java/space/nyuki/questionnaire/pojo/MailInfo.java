@@ -27,4 +27,8 @@ public class MailInfo {
 	private String password;
 	@Field
 	private String from;
+	@Field
+	private String subject;
+	@Field
+	private String template;
 }
