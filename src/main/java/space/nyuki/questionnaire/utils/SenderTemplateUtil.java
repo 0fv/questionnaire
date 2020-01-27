@@ -22,7 +22,7 @@ public class SenderTemplateUtil {
 	}
 
 	private static String getUrl(String baseUrl, Member member, QuestionnaireEntity questionnaireEntity) {
-		String m = member.getEigenvalue();
+		String m = member.getId();
 		String q = questionnaireEntity.getId();
 		return baseUrl + "/" + q + "/" + m;
 	}

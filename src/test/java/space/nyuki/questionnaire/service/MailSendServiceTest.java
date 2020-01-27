@@ -51,7 +51,7 @@ class MailSendServiceTest {
 	@Test
 	void sendMail() {
 		Member member = new Member();
-		member.setEigenvalue("sdfadfasdfaff");
+		member.setId("sdfsdf");
 		member.setName("ning");
 		member.setEmail("email");
 		QuestionnaireEntity questionnaireEntity = new QuestionnaireEntity();

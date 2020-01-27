@@ -44,6 +44,16 @@ public class MemberGroupService {
 	}
 
 	@Transactional
+	public void updateEditDate(String token, String gid) {
+		String username = JWTUtil.getUsername(token);
+		Update update = new Update();
+		assert username != null;
+		update.set("edited_account", username);
+		update.set("edited_time", new Date());
+		mongoTemplate.findAndModify(Query.query(Criteria.where("_id").is(gid)), update, MemberGroup.class);
+	}
+
+	@Transactional
 	public void deleteData(String id) {
 		Update update = new Update();
 		update.set("is_delete", 1);
