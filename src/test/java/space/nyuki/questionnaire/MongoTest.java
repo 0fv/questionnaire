@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import space.nyuki.questionnaire.pojo.MemberGroup;
 import space.nyuki.questionnaire.pojo.Questionnaire;
 import space.nyuki.questionnaire.service.QuestionnaireService;
 import space.nyuki.questionnaire.utils.MapUtil;
@@ -55,5 +56,10 @@ public class MongoTest {
         String y = "sefsf";
         String q = "sdfsf";
 
+    }
+    @Test
+    public void test6(){
+        MemberGroup id = mongoTemplate.findOne(Query.query(Criteria.where("_id").is("5e2e86dd1e05a076396c14c2")), MemberGroup.class);
+        System.out.println(id);
     }
 }

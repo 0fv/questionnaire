@@ -28,3 +28,9 @@ Unauthenticated:
 AuthenticationFailed:
   code: 4009
   msg: 访问被拒绝，请检查权限
+ExcelAnalysis:
+  code: 4010
+  msg: excel导入错误
+CanNotCreate:
+  code: 5001
+  msg: 无法创建文件，请检查当前目录权限

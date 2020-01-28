@@ -1,15 +1,24 @@
 package space.nyuki.questionnaire.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import space.nyuki.questionnaire.factory.TransFactory;
 import space.nyuki.questionnaire.group.GroupView;
 import space.nyuki.questionnaire.pojo.Member;
 import space.nyuki.questionnaire.pojo.TransData;
 import space.nyuki.questionnaire.service.MemberService;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/member")
@@ -26,10 +35,10 @@ public class MemberController {
 	@PostMapping("{gid}")
 	public TransData addData(@PathVariable(name = "gid") String gid,
 	                         @RequestHeader(name = "token") String token,
-			                         @Validated(GroupView.Create.class)
-			                         @RequestBody Member member,
+	                         @Validated(GroupView.Create.class)
+	                         @RequestBody Member member,
 	                         BindingResult result) {
-		memberService.addData(gid, member,token);
+		memberService.addData(gid, member, token);
 		return TransFactory.getSuccessResponse();
 	}
 
@@ -40,7 +49,7 @@ public class MemberController {
 			@Validated(GroupView.Update.class)
 			@RequestBody Member member,
 			BindingResult bindingResult) {
-		memberService.updateData(gid,member,token);
+		memberService.updateData(gid, member, token);
 		return TransFactory.getSuccessResponse();
 	}
 
@@ -49,7 +58,41 @@ public class MemberController {
 			@PathVariable(name = "gid") String gid,
 			@RequestHeader(name = "token") String token,
 			@PathVariable(name = "id") String id) {
-		memberService.deleteData(gid,id,token);
+		memberService.deleteData(gid, id, token);
+		return TransFactory.getSuccessResponse();
+	}
+
+	@SneakyThrows
+	@GetMapping("template")
+	public ResponseEntity<Resource> downloadTemplate(HttpServletRequest request) {
+		Resource resource = memberService.getTemplateFile();
+		return responseEntity(request, resource);
+	}
+
+	@SneakyThrows
+	@GetMapping("export/{gid}")
+	public ResponseEntity<Resource> exportMember(HttpServletRequest request, @PathVariable(name = "gid") String gid) {
+		Resource resource = memberService.exportData(gid);
+		return responseEntity(request, resource);
+	}
+
+	private ResponseEntity<Resource> responseEntity(HttpServletRequest request, Resource resource) throws IOException {
+		String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+		if (contentType == null) {
+			contentType = "application/octet-stream";
+		}
+		return ResponseEntity.ok()
+				.contentType(MediaType.parseMediaType(contentType))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+				.body(resource);
+	}
+
+	@PostMapping("upload/{id}")
+	public TransData uploadData(
+			@PathVariable(name = "id") String id,
+			@RequestHeader(name = "token") String token,
+			@RequestParam("file") MultipartFile file) {
+		memberService.uploadData(id, token, file);
 		return TransFactory.getSuccessResponse();
 	}
 }

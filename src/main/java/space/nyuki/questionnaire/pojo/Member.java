@@ -1,5 +1,6 @@
 package space.nyuki.questionnaire.pojo;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
@@ -29,6 +30,7 @@ public class Member {
 			groups = GroupView.Create.class
 	)
 	@JsonView(GroupView.View.class)
+	@ExcelProperty(index = 0,value = "姓名")
 	private String name;
 	@Field
 	@Email(
@@ -36,9 +38,11 @@ public class Member {
 			groups = GroupView.Create.class
 	)
 	@JsonView(GroupView.View.class)
+	@ExcelProperty(index = 1,value = "邮件地址")
 	private String email;
 	@Field("additional_info")
 	@JsonProperty("additional_info")
+	@ExcelProperty(index=2,value ="附加信息")
 	@JsonView(GroupView.View.class)
 	private String additionalInfo;
 }

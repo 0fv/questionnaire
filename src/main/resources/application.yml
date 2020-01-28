@@ -20,7 +20,17 @@ spring:
       uri: mongodb://127.0.0.1/question
   mail:
     default-encoding: UTF-8
+
+
+  servlet:
+    multipart:
+      file-size-threshold: 4KB
+      max-file-size: 10MB
+      max-request-size: 10MB
+      enabled: true
 server:
   port: 8000
+temp-file:
+  dir: /tmp
 
 

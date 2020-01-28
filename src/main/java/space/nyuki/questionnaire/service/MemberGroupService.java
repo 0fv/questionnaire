@@ -67,4 +67,8 @@ public class MemberGroupService {
 	public List<MemberGroup> getData() {
 		return mongoTemplate.find(Query.query(Criteria.where("is_delete").is(0)), MemberGroup.class);
 	}
+
+	public MemberGroup getDataById(String id) {
+		return mongoTemplate.findOne(Query.query(Criteria.where("_id").is(id)), MemberGroup.class);
+	}
 }

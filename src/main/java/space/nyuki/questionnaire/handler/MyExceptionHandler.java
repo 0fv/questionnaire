@@ -23,7 +23,7 @@ public class MyExceptionHandler {
 	@Autowired
 	private Environment env;
 
-	private final String[] NEED_MSG = {"FormatNotCorrect"};
+	private final String[] NEED_MSG = {"FormatNotCorrect", "ExcelAnalysis"};
 
 	@ExceptionHandler(Exception.class)
 	public TransData templateNotFoundException(Exception e) {
@@ -32,6 +32,7 @@ public class MyExceptionHandler {
 		String code = env.getProperty(exceptionName + ".code");
 		System.out.println("+++++++++++++");
 		System.out.println(exceptionName);
+		e.printStackTrace();
 		System.out.println("+++++++++++++");
 		if (Objects.isNull(code)) {
 			return TransFactory.getFailedResponse(5001, "未知错误：" + e.getMessage());
@@ -45,7 +46,7 @@ public class MyExceptionHandler {
 		if (Objects.isNull(sysMsg)) {
 			return TransFactory.getFailedResponse(c, msg);
 		}
-		if(Arrays.asList(this.NEED_MSG).contains(exceptionName)){
+		if (Arrays.asList(this.NEED_MSG).contains(exceptionName)) {
 			return TransFactory.getFailedResponse(c, msg + " " + e.getMessage());
 		}
 		return TransFactory.getFailedResponse(c, msg);
