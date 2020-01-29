@@ -13,6 +13,7 @@ import java.util.Objects;
 public class ValidUtil {
     public static void valid(BindingResult result){
         if (result.hasErrors()) {
+            System.out.println(result.getFieldError().getField());
             throw new FormatNotCorrectException(Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
         }
     }

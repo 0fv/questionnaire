@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
 public class Comment implements AnswerCell {
 	@ApiModelProperty(value = "自填框内容", example = "我发功出自内心")
 	@NotNull(
-			message = "评论不能为null",
+			message = "评论不能为空",
 			groups = {
 					GroupView.Input.class
 			}
