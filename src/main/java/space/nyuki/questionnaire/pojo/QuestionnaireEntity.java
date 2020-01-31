@@ -27,10 +27,19 @@ public class QuestionnaireEntity {
 	private List<QuestionGroup> questionGroups;
 	@Field("is_anonymous")
 	@JsonProperty("is_anonymous")
+	//0 匿名 //1 不匿名
 	private Integer isAnonymous;
-	@JsonProperty("member_group")
-	@Field("member_group")
-	private String memberGroup;
+	@Field("member_group_name")
+	@JsonProperty("member_group_name")
+	private List<String> memberGroupName;
+	@Field
+	private List<Member> members;
+	@Field
+	//0 不分页，//1 按组分页 //2 按pageSize条数分页
+	private Integer pagination;
+	@Field("page_size")
+	@JsonProperty("page_size")
+	private Integer pageSize;
 	@Field("is_finish")
 	@JsonProperty("is_finish")
 	private int isFinish;

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import space.nyuki.questionnaire.factory.TransFactory;
 import space.nyuki.questionnaire.group.GroupView;
 import space.nyuki.questionnaire.pojo.Questionnaire;
+import space.nyuki.questionnaire.pojo.QuestionnaireCreate;
 import space.nyuki.questionnaire.pojo.TransData;
 import space.nyuki.questionnaire.service.QuestionnaireService;
 
@@ -41,8 +42,14 @@ public class QuestionnaireController {
 
 	@JsonView(GroupView.Update.class)
 	@GetMapping("{id}")
-	public TransData getQuestionnaireById(@PathVariable(name = "id") String id) {
-		return TransFactory.getSuccessResponse(questionnaireService.getQuestionnaireById(id));
+	public TransData getQuestionnaireById(@PathVariable(name = "id") String id,
+	                                      @RequestParam(name = "finish", required = false, defaultValue = "0") int isEdit) {
+		if (isEdit == 0) {
+			return TransFactory.getSuccessResponse(questionnaireService.getQuestionnaireById(id));
+		} else {
+			return TransFactory.getSuccessResponse(questionnaireService.getFinishQuestionnaireById(id));
+		}
+
 	}
 
 	@ApiOperation("删除问卷调查表")
@@ -62,12 +69,12 @@ public class QuestionnaireController {
 	@ApiOperation("修改问卷调查表")
 	@PutMapping
 	public TransData alterQuestionnaire(
-			@RequestHeader(name="token") String token,
+			@RequestHeader(name = "token") String token,
 			@JsonView(GroupView.Update.class)
 			@Validated(GroupView.Update.class)
 			@RequestBody Questionnaire questionnaire,
 			BindingResult bindingResult) {
-		questionnaireService.alterQuestionnaire(questionnaire,token);
+		questionnaireService.alterQuestionnaire(questionnaire, token);
 		return TransFactory.getSuccessResponse();
 	}
 
@@ -94,6 +101,15 @@ public class QuestionnaireController {
 			@RequestParam(name = "isEdit", required = true) Integer isEdit
 	) {
 		questionnaireService.editChange(id, isEdit);
+		return TransFactory.getSuccessResponse();
+	}
+
+	@PostMapping("create")
+	public TransData createNewInstance(@RequestBody
+	                                   @Validated
+			                                   QuestionnaireCreate questionnaireCreate,
+	                                   BindingResult result) {
+		questionnaireService.createNewInstance(questionnaireCreate);
 		return TransFactory.getSuccessResponse();
 	}
 

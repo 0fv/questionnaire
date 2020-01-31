@@ -10,14 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.nyuki.questionnaire.exception.MailNotSetException;
 import space.nyuki.questionnaire.exception.URLNotSetException;
-import space.nyuki.questionnaire.pojo.BaseUrl;
-import space.nyuki.questionnaire.pojo.MailInfo;
-import space.nyuki.questionnaire.pojo.Member;
-import space.nyuki.questionnaire.pojo.QuestionnaireEntity;
+import space.nyuki.questionnaire.pojo.*;
 import space.nyuki.questionnaire.utils.SenderTemplateUtil;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -58,8 +56,7 @@ public class MailSenderService {
 	public MailInfo getMailInfo() {
 		return this.mailInfo;
 	}
-
-	public void sendMail(Member member, QuestionnaireEntity questionnaireEntity) {
+	public void sendMail(List<Member> members, QuestionnaireEntity questionnaireEntity) {
 		BaseUrl baseUrl = baseUrlService.getBaseUrl();
 		if (Objects.isNull(baseUrl)) {
 			throw new URLNotSetException();
@@ -68,6 +65,12 @@ public class MailSenderService {
 			throw new MailNotSetException();
 		}
 		String mailTemplate = this.mailInfo.getTemplate();
+		members.forEach(member -> {
+			sendMail(member,questionnaireEntity,mailTemplate,baseUrl);
+		});
+	}
+	@Transactional
+	public void sendMail(Member member,QuestionnaireEntity questionnaireEntity,String mailTemplate,BaseUrl baseUrl){
 		MimeMessage message = mailSender.createMimeMessage();
 		try {
 			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -75,11 +78,37 @@ public class MailSenderService {
 			helper.setTo(member.getEmail());
 			helper.setSubject(this.mailInfo.getSubject());
 			String content =
-					SenderTemplateUtil.generateMailContent(member, questionnaireEntity, mailTemplate, baseUrl.getUrl());
+					SenderTemplateUtil.
+							generateMailContent(member, questionnaireEntity, mailTemplate, baseUrl.getUrl());
 			helper.setText(content, true);
 			mailSender.send(message);
-		} catch (MessagingException e) {
-			e.printStackTrace();
+			MailLog mailLog = getSuccessMailLog(member, questionnaireEntity);
+			mongoTemplate.save(mailLog);
+		} catch (Exception e) {
+			mongoTemplate.save(getFailedMailLog(member, questionnaireEntity, e));
 		}
+	}
+
+	private MailLog getSuccessMailLog(Member member, QuestionnaireEntity questionnaireEntity) {
+		MailLog mailLog = new MailLog();
+		mailLog.setEmail(member.getEmail());
+		mailLog.setStatus("success");
+		mailLog.setName(member.getName());
+		mailLog.setTitle(questionnaireEntity.getTitle());
+		mailLog.setSendTime(new Date());
+		mailLog.setQuestionnaireEntityId(questionnaireEntity.getId());
+		return mailLog;
+	}
+
+	private MailLog getFailedMailLog(Member member, QuestionnaireEntity questionnaireEntity, Exception e) {
+		MailLog mailLog = new MailLog();
+		mailLog.setEmail(member.getEmail());
+		mailLog.setStatus("failed");
+		mailLog.setName(member.getName());
+		mailLog.setSendTime(new Date());
+		mailLog.setTitle(questionnaireEntity.getTitle());
+		mailLog.setQuestionnaireEntityId(questionnaireEntity.getId());
+		mailLog.setMessage(e.getMessage());
+		return mailLog;
 	}
 }

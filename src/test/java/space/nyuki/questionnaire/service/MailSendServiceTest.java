@@ -10,10 +10,12 @@ import space.nyuki.questionnaire.pojo.MailInfo;
 import space.nyuki.questionnaire.pojo.Member;
 import space.nyuki.questionnaire.pojo.QuestionnaireEntity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @SpringBootTest
-class MailSendServiceTest {
+class MailSendServiceTest{
 	@Autowired
 	private MailSenderService mailSenderService;
 	@Autowired
@@ -52,13 +54,17 @@ class MailSendServiceTest {
 	void sendMail() {
 		Member member = new Member();
 		member.setId("sdfsdf");
-		member.setName("ning");
-		member.setEmail("email");
+		member.setName("df");
+		member.setEmail("fdfdf");
 		QuestionnaireEntity questionnaireEntity = new QuestionnaireEntity();
 		questionnaireEntity.setFrom(new Date());
 		questionnaireEntity.setTitle("nihao");
 		questionnaireEntity.setTo(new Date());
 		questionnaireEntity.setId("adfafdafdadsf");
-		mailSenderService.sendMail(member, questionnaireEntity);
+		List<Member> m = new ArrayList<>();
+		m.add(member);
+		mailSenderService.sendMail(m, questionnaireEntity);
+		mailSenderService.sendMail(m, questionnaireEntity);
+		System.out.println("jasdff");
 	}
 }

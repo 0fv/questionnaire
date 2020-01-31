@@ -23,9 +23,8 @@ import space.nyuki.questionnaire.utils.MapUtil;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class MemberService {
@@ -98,5 +97,14 @@ public class MemberService {
 		}
 		EasyExcel.write(filename, Member.class).sheet("人员").doWrite(data);
 		return new UrlResource(new File(filename).toURI().toASCIIString());
+	}
+
+	public List<Member> getMembersById(List<String> memberId) {
+		List<MemberGroup> memberGroup = mongoTemplate.find(Query.query(Criteria.where("_id").in(memberId)), MemberGroup.class);
+		return memberGroup.stream()
+				.map(MemberGroup::getId)
+				.map(this::getData)
+				.flatMap(Collection::stream)
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
 }

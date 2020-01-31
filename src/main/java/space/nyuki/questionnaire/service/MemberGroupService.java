@@ -14,6 +14,7 @@ import space.nyuki.questionnaire.utils.MapUtil;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class MemberGroupService {
@@ -70,5 +71,10 @@ public class MemberGroupService {
 
 	public MemberGroup getDataById(String id) {
 		return mongoTemplate.findOne(Query.query(Criteria.where("_id").is(id)), MemberGroup.class);
+	}
+	public List<String> getGroupName(List<String> idList){
+		return idList.stream().map(this::getDataById)
+				.map(MemberGroup::getGroupName)
+				.collect(Collectors.toList());
 	}
 }

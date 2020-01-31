@@ -5,12 +5,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.nyuki.questionnaire.exception.CanNotEditException;
 import space.nyuki.questionnaire.exception.ElementNotFoundException;
-import space.nyuki.questionnaire.pojo.PageContainer;
-import space.nyuki.questionnaire.pojo.Questionnaire;
+import space.nyuki.questionnaire.pojo.*;
 import space.nyuki.questionnaire.utils.JWTUtil;
 import space.nyuki.questionnaire.utils.MapUtil;
 
@@ -30,6 +30,14 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 public class QuestionnaireService {
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	@Autowired
+	private MemberService memberService;
+	@Autowired
+	private MemberGroupService memberGroupService;
+	@Autowired
+	private MailSenderService mailSenderService;
+	@Autowired
+	private MailSendScheduleService mailSendScheduleService;
 
 	/**
 	 * 创建问卷调查表
@@ -184,6 +192,14 @@ public class QuestionnaireService {
 		if (questionnaire.getIsEdit() == 1) {
 			throw new CanNotEditException();
 		}
+		return questionnaire;
+	}
+
+	public Questionnaire getFinishQuestionnaireById(String id) {
+		Questionnaire questionnaire = mongoTemplate.findOne(
+				Query.query(Criteria.where("_id").is(id).and("is_edit").is(1)),
+				Questionnaire.class
+		);
 		if (Objects.nonNull(questionnaire)) {
 			return questionnaire;
 		} else {
@@ -221,5 +237,43 @@ public class QuestionnaireService {
 		update.set("modify_time", new Date());
 		mongoTemplate.findAndModify(query(Criteria.where("_id").is(id))
 				, update, Questionnaire.class);
+	}
+
+	@Transactional
+	@Async("taskExecutor")
+	public void createNewInstance(QuestionnaireCreate create) {
+		String id = create.getQuestionnaireId();
+		Questionnaire questionnaire = getFinishQuestionnaireById(id);
+		QuestionnaireEntity questionnaireEntity = new QuestionnaireEntity();
+		questionnaireEntity.setTitle(create.getName());
+		questionnaireEntity.setFrom(create.getFrom());
+		questionnaireEntity.setTo(create.getTo());
+		questionnaireEntity.setIntroduce(questionnaire.getIntroduce());
+		questionnaireEntity.setIsAnonymous(create.getIsAnonymous());
+		questionnaireEntity.setPagination(create.getPagination());
+		questionnaireEntity.setQuestionGroups(questionnaire.getQuestionGroups());
+		if (create.getPagination() == 2) {
+			questionnaireEntity.setPageSize(create.getPageSize());
+		}
+		if (create.getIsAnonymous() == 1) {
+
+			List<String> memberId = create.getMemberId();
+			List<Member> members = memberService.getMembersById(memberId);
+			List<String> memberGroupNameList = memberGroupService.getGroupName(memberId);
+			questionnaireEntity.setMembers(members);
+
+			questionnaireEntity.setMemberGroupName(memberGroupNameList);
+			Date sendMailTime = create.getSendMailTime();
+			QuestionnaireEntity q = mongoTemplate.save(questionnaireEntity);
+			if (sendMailTime.before(new Date())) {
+				mailSenderService.sendMail(members, q);
+			} else {
+				mailSendScheduleService.addSchedule(members,memberGroupNameList,q,sendMailTime);
+			}
+		} else {
+			mongoTemplate.save(questionnaireEntity);
+		}
+
+
 	}
 }
