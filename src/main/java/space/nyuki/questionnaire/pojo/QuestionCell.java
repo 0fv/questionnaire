@@ -22,24 +22,32 @@ import java.util.List;
 @Data
 @ApiModel("问答方框")
 @JsonView({
-        Object.class
+		Object.class
 })
 public class QuestionCell {
-    @NotBlank(
-            message = "标题不能为空",
-            groups = {GroupView.Create.class
-            }
-    )
-    @ApiModelProperty(value = "问题",example = "你好吗")
-    private String title;
-    @NotNull(
-            message = "题目内容不能为空",
-            groups = {GroupView.Create.class
-            }
-    )
-    @ApiModelProperty(value = "答案",example = "{\"comment\":{\"comment\": \"\"}}")
-    @Field("answer_cells")
-    @JsonProperty("answer_cells")
-    private List<AnswerCell> answerCells;
+	@NotBlank(
+			message = "标题不能为空",
+			groups = {GroupView.Create.class
+			}
+	)
+	@ApiModelProperty(value = "问题", example = "你好吗")
+	private String title;
+	@NotNull(
+			message = "题目内容不能为空",
+			groups = {GroupView.Create.class
+			}
+	)
+	@ApiModelProperty(value = "答案", example = "{\"comment\":{\"comment\": \"\"}}")
+	@Field("answer_cells")
+	@JsonProperty("answer_cells")
+	private List<AnswerCell> answerCells;
+	@Field("must_answer")
+	// 0 非必答 1 必答
+	@NotNull(message = "请选择是否必答",
+			groups = {
+					GroupView.Create.class
+			})
+	@JsonProperty("must_answer")
+	private int mustAnswer;
 
 }

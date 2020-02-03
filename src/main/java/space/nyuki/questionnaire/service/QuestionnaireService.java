@@ -241,11 +241,13 @@ public class QuestionnaireService {
 
 	@Transactional
 	@Async("taskExecutor")
-	public void createNewInstance(QuestionnaireCreate create) {
+	public void createNewInstance(QuestionnaireCreate create, String token) {
+		String username = JWTUtil.getUsername(token);
 		String id = create.getQuestionnaireId();
 		Questionnaire questionnaire = getFinishQuestionnaireById(id);
 		QuestionnaireEntity questionnaireEntity = new QuestionnaireEntity();
 		questionnaireEntity.setTitle(create.getName());
+		questionnaireEntity.setCreatedAccount(username);
 		questionnaireEntity.setFrom(create.getFrom());
 		questionnaireEntity.setTo(create.getTo());
 		questionnaireEntity.setIntroduce(questionnaire.getIntroduce());
@@ -268,7 +270,7 @@ public class QuestionnaireService {
 			if (sendMailTime.before(new Date())) {
 				mailSenderService.sendMail(members, q);
 			} else {
-				mailSendScheduleService.addSchedule(members,memberGroupNameList,q,sendMailTime);
+				mailSendScheduleService.addSchedule(members, memberGroupNameList, q, sendMailTime);
 			}
 		} else {
 			mongoTemplate.save(questionnaireEntity);

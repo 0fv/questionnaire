@@ -32,4 +32,15 @@ public class MailController {
 		mailSenderService.setMailInfo(mailInfo);
 		return TransFactory.getSuccessResponse();
 	}
+
+	@GetMapping("log")
+	public TransData getLogData() {
+		return TransFactory.getSuccessResponse(mailSenderService.getLogData());
+	}
+
+	@GetMapping("schedule")
+	@JsonView(GroupView.View.class)
+	public TransData getSchedule() {
+		return TransFactory.getSuccessResponse(mailSenderService.getScheduleData());
+	}
 }

@@ -27,7 +27,7 @@ public class MailSendScheduleService {
 		MailSchedule mailSchedule = new MailSchedule();
 		mailSchedule.setMembers(memberList);
 		mailSchedule.setMemberGroupName(memberGroupName);
-		mailSchedule.setQuestionnaireEntity(questionnaireEntity);
+		mailSchedule.setQuestionnaireEntityId(questionnaireEntity.getId());
 		mailSchedule.setQuestionnaireTitle(questionnaireEntity.getTitle());
 		mailSchedule.setSendingTime(sendTime);
 		mongoTemplate.save(mailSchedule);
@@ -37,16 +37,16 @@ public class MailSendScheduleService {
 		return mongoTemplate.find(Query.query(Criteria.where("is_delete").is(0)), MailSchedule.class);
 	}
 
-	@Scheduled(cron = "* * * * *")
+	@Scheduled(cron = "0 * * * * *")
 	public void process() {
 		List<MailSchedule> mails = mongoTemplate.find(
 				Query.query(Criteria.where("sending_time").lte(new Date()).and("is_delete").is(0)), MailSchedule.class);
-
-		mails.forEach(mailSchedule -> {
-			delete(mailSchedule.getId());
-			mailSenderService.sendMail(mailSchedule.getMembers(), mailSchedule.getQuestionnaireEntity());
-
-		});
+		if (!mails.isEmpty()) {
+			mails.forEach(mailSchedule -> {
+				delete(mailSchedule.getId());
+				mailSenderService.sendMail(mailSchedule.getMembers(),mailSchedule.getQuestionnaireEntityId());
+			});
+		}
 	}
 
 	@Transactional

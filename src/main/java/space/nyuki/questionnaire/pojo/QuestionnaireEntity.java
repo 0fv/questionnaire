@@ -1,10 +1,12 @@
 package space.nyuki.questionnaire.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import space.nyuki.questionnaire.group.GroupView;
 
 import java.util.Date;
 import java.util.List;
@@ -13,20 +15,30 @@ import java.util.List;
 @Document("questionnaire_entity")
 public class QuestionnaireEntity {
 	@Id
+	@JsonView(GroupView.View.class)
 	private String id;
 	@Field
+	@JsonView(GroupView.View.class)
 	private String title;
 	@Field
+	@JsonView(GroupView.View.class)
 	private String introduce;
+	@Field("created_account")
+	@JsonView(GroupView.View.class)
+	@JsonProperty("created_account")
+	private String createdAccount;
 	@Field
+	@JsonView(GroupView.View.class)
 	private Date from;
 	@Field
+	@JsonView(GroupView.View.class)
 	private Date to;
 	@Field("question_group")
 	@JsonProperty("question_group")
 	private List<QuestionGroup> questionGroups;
 	@Field("is_anonymous")
 	@JsonProperty("is_anonymous")
+	@JsonView(GroupView.View.class)
 	//0 匿名 //1 不匿名
 	private Integer isAnonymous;
 	@Field("member_group_name")

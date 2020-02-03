@@ -105,11 +105,14 @@ public class QuestionnaireController {
 	}
 
 	@PostMapping("create")
-	public TransData createNewInstance(@RequestBody
-	                                   @Validated
-			                                   QuestionnaireCreate questionnaireCreate,
-	                                   BindingResult result) {
-		questionnaireService.createNewInstance(questionnaireCreate);
+	public TransData createNewInstance(
+			@RequestHeader(name = "token") String token,
+			@Validated
+			@RequestBody
+					QuestionnaireCreate questionnaireCreate,
+			BindingResult result) {
+		System.out.println(questionnaireCreate);
+		questionnaireService.createNewInstance(questionnaireCreate, token);
 		return TransFactory.getSuccessResponse();
 	}
 

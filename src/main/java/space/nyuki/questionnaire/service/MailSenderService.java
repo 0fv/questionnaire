@@ -26,6 +26,8 @@ public class MailSenderService {
 	private JavaMailSenderImpl mailSender;
 	@Autowired
 	private BaseUrlService baseUrlService;
+	@Autowired
+	private QuestionnaireEntityService questionnaireEntityService;
 	private MailInfo mailInfo;
 
 	public void init() {
@@ -43,8 +45,9 @@ public class MailSenderService {
 
 	@Transactional
 	public void setMailInfo(MailInfo mailInfo) {
-		mongoTemplate.save(mailInfo);
 		this.mailInfo = mailInfo;
+		this.mailInfo.setId("mailInfo");
+		mongoTemplate.save(mailInfo);
 		mailSender.setUsername(mailInfo.getUsername());
 		mailSender.setPassword(mailInfo.getPassword());
 		mailSender.setProtocol(mailInfo.getProtocol());
@@ -56,6 +59,7 @@ public class MailSenderService {
 	public MailInfo getMailInfo() {
 		return this.mailInfo;
 	}
+
 	public void sendMail(List<Member> members, QuestionnaireEntity questionnaireEntity) {
 		BaseUrl baseUrl = baseUrlService.getBaseUrl();
 		if (Objects.isNull(baseUrl)) {
@@ -66,11 +70,28 @@ public class MailSenderService {
 		}
 		String mailTemplate = this.mailInfo.getTemplate();
 		members.forEach(member -> {
-			sendMail(member,questionnaireEntity,mailTemplate,baseUrl);
+			sendMail(member, questionnaireEntity, mailTemplate, baseUrl);
 		});
 	}
+
+	public void sendMail(List<Member> members, String questionnaireEntityId) {
+		BaseUrl baseUrl = baseUrlService.getBaseUrl();
+		if (Objects.isNull(baseUrl)) {
+			throw new URLNotSetException();
+		}
+		if (Objects.isNull(this.mailInfo)) {
+			throw new MailNotSetException();
+		}
+		QuestionnaireEntity questionnaireEntity = questionnaireEntityService.getDataById(questionnaireEntityId);
+		String mailTemplate = this.mailInfo.getTemplate();
+		members.forEach(member -> {
+			sendMail(member, questionnaireEntity, mailTemplate, baseUrl);
+		});
+	}
+
+
 	@Transactional
-	public void sendMail(Member member,QuestionnaireEntity questionnaireEntity,String mailTemplate,BaseUrl baseUrl){
+	public void sendMail(Member member, QuestionnaireEntity questionnaireEntity, String mailTemplate, BaseUrl baseUrl) {
 		MimeMessage message = mailSender.createMimeMessage();
 		try {
 			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -110,5 +131,13 @@ public class MailSenderService {
 		mailLog.setQuestionnaireEntityId(questionnaireEntity.getId());
 		mailLog.setMessage(e.getMessage());
 		return mailLog;
+	}
+
+	public List<MailLog> getLogData() {
+		return mongoTemplate.findAll(MailLog.class);
+	}
+
+	public List<MailSchedule> getScheduleData() {
+		return mongoTemplate.find(Query.query(Criteria.where("is_delete").is(0)), MailSchedule.class);
 	}
 }
