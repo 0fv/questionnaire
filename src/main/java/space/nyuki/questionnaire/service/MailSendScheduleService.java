@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import space.nyuki.questionnaire.pojo.QuestionnaireEntity;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class MailSendScheduleService {
@@ -44,8 +46,19 @@ public class MailSendScheduleService {
 		if (!mails.isEmpty()) {
 			mails.forEach(mailSchedule -> {
 				delete(mailSchedule.getId());
-				mailSenderService.sendMail(mailSchedule.getMembers(),mailSchedule.getQuestionnaireEntityId());
+				mailSenderService.sendMail(mailSchedule.getMembers(), mailSchedule.getQuestionnaireEntityId());
 			});
+		}
+	}
+
+	@Async("taskExecutor")
+	public void sendNow(String id) {
+		MailSchedule mailSchedule =
+				mongoTemplate.findOne(
+						Query.query(Criteria.where("_id").is(id).and("is_delete").is(0)), MailSchedule.class);
+		if (Objects.nonNull(mailSchedule)){
+			delete(mailSchedule.getId());
+			mailSenderService.sendMail(mailSchedule.getMembers(),mailSchedule.getQuestionnaireEntityId());
 		}
 	}
 

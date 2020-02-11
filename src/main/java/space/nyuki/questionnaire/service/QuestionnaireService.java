@@ -10,14 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.nyuki.questionnaire.exception.CanNotEditException;
 import space.nyuki.questionnaire.exception.ElementNotFoundException;
+import space.nyuki.questionnaire.exception.FormatNotCorrectException;
 import space.nyuki.questionnaire.pojo.*;
+import space.nyuki.questionnaire.pojo.answer.AnswerCell;
 import space.nyuki.questionnaire.utils.JWTUtil;
 import space.nyuki.questionnaire.utils.MapUtil;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static org.springframework.data.mongodb.core.query.Query.query;
 
@@ -239,6 +238,28 @@ public class QuestionnaireService {
 				, update, Questionnaire.class);
 	}
 
+	public void create(QuestionnaireCreate create, String token) {
+		if (create.getPagination() == 2) {
+			Integer pageSize = create.getPageSize();
+			if (Objects.isNull(pageSize) || pageSize <= 0) {
+				throw new FormatNotCorrectException("请填写正确的分页信息");
+			}
+		}
+		if (create.getIsAnonymous() == 1) {
+			List<String> memberId = create.getMemberId();
+			if (Objects.isNull(memberId) || memberId.isEmpty()) {
+				throw new FormatNotCorrectException("请选择用户组");
+			}
+		}
+		if (create.getFrom().before(new Date())) {
+			create.setFrom(new Date());
+		}
+		if (create.getFrom().after(create.getTo())) {
+			throw new FormatNotCorrectException("开始时间必须小于结束时间");
+		}
+		createNewInstance(create, token);
+	}
+
 	@Transactional
 	@Async("taskExecutor")
 	public void createNewInstance(QuestionnaireCreate create, String token) {
@@ -253,7 +274,8 @@ public class QuestionnaireService {
 		questionnaireEntity.setIntroduce(questionnaire.getIntroduce());
 		questionnaireEntity.setIsAnonymous(create.getIsAnonymous());
 		questionnaireEntity.setPagination(create.getPagination());
-		questionnaireEntity.setQuestionGroups(questionnaire.getQuestionGroups());
+		List<QuestionGroup> questionGroups = setIndex(questionnaire.getQuestionGroups());
+		questionnaireEntity.setQuestionGroups(questionGroups);
 		if (create.getPagination() == 2) {
 			questionnaireEntity.setPageSize(create.getPageSize());
 		}
@@ -275,7 +297,20 @@ public class QuestionnaireService {
 		} else {
 			mongoTemplate.save(questionnaireEntity);
 		}
+	}
 
-
+	private List<QuestionGroup> setIndex(List<QuestionGroup> groups) {
+		for (int i = 0; i < groups.size(); i++) {
+			QuestionGroup questionGroup = groups.get(i);
+			List<QuestionCell> questionCells = questionGroup.getQuestionCells();
+			for (int a = 0; a < questionCells.size(); a++) {
+				QuestionCell questionCell = questionCells.get(a);
+				List<AnswerCell> answerCells = questionCell.getAnswerCells();
+				for (int b = 0; b < answerCells.size(); b++) {
+					answerCells.get(b).setIndex(Arrays.asList(i, a, b));
+				}
+			}
+		}
+		return groups;
 	}
 }

@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 import space.nyuki.questionnaire.group.GroupView;
 
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author ning
@@ -27,7 +28,8 @@ public class InquiryDate implements AnswerCell {
 					GroupView.Input.class
 			}
 	)
-	private Timestamp date;
+	private Date answer;
 	private Boolean vdate;
 	private Boolean vtime;
+	private List<Integer> index;
 }

@@ -34,3 +34,9 @@ ExcelAnalysis:
 CanNotCreate:
   code: 5001
   msg: 无法创建文件，请检查当前目录权限
+AccessDenied:
+  code: 4011
+  msg: 当前成员无访问权限，拒绝查看
+QuestionnaireNotFound:
+  code: 4012
+  msg: 未找到当前问卷编号

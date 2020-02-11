@@ -26,7 +26,7 @@ public class MailLog {
 	@Field
 	private String email;
 	@Field
-	private String status;
+	private int status;
 	@Field
 	private String message;
 }

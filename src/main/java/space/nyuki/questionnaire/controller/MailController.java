@@ -9,6 +9,7 @@ import space.nyuki.questionnaire.factory.TransFactory;
 import space.nyuki.questionnaire.group.GroupView;
 import space.nyuki.questionnaire.pojo.MailInfo;
 import space.nyuki.questionnaire.pojo.TransData;
+import space.nyuki.questionnaire.service.MailSendScheduleService;
 import space.nyuki.questionnaire.service.MailSenderService;
 
 @RestController
@@ -16,6 +17,8 @@ import space.nyuki.questionnaire.service.MailSenderService;
 public class MailController {
 	@Autowired
 	private MailSenderService mailSenderService;
+	@Autowired
+	private MailSendScheduleService mailSendScheduleService;
 
 	@GetMapping
 	public TransData getData() {
@@ -42,5 +45,11 @@ public class MailController {
 	@JsonView(GroupView.View.class)
 	public TransData getSchedule() {
 		return TransFactory.getSuccessResponse(mailSenderService.getScheduleData());
+	}
+
+	@PostMapping("{id}")
+	public TransData sendNow(@PathVariable(name = "id") String id) {
+		mailSendScheduleService.sendNow(id);
+		return TransFactory.getSuccessResponse();
 	}
 }

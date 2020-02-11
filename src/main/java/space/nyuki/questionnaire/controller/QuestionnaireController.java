@@ -112,7 +112,7 @@ public class QuestionnaireController {
 					QuestionnaireCreate questionnaireCreate,
 			BindingResult result) {
 		System.out.println(questionnaireCreate);
-		questionnaireService.createNewInstance(questionnaireCreate, token);
+		questionnaireService.create(questionnaireCreate, token);
 		return TransFactory.getSuccessResponse();
 	}
 

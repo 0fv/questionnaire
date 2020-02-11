@@ -113,7 +113,7 @@ public class MailSenderService {
 	private MailLog getSuccessMailLog(Member member, QuestionnaireEntity questionnaireEntity) {
 		MailLog mailLog = new MailLog();
 		mailLog.setEmail(member.getEmail());
-		mailLog.setStatus("success");
+		mailLog.setStatus(1);
 		mailLog.setName(member.getName());
 		mailLog.setTitle(questionnaireEntity.getTitle());
 		mailLog.setSendTime(new Date());
@@ -124,7 +124,7 @@ public class MailSenderService {
 	private MailLog getFailedMailLog(Member member, QuestionnaireEntity questionnaireEntity, Exception e) {
 		MailLog mailLog = new MailLog();
 		mailLog.setEmail(member.getEmail());
-		mailLog.setStatus("failed");
+		mailLog.setStatus(0);
 		mailLog.setName(member.getName());
 		mailLog.setSendTime(new Date());
 		mailLog.setTitle(questionnaireEntity.getTitle());

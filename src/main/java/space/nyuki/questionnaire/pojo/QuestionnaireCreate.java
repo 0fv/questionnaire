@@ -3,10 +3,7 @@ package space.nyuki.questionnaire.pojo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +25,7 @@ public class QuestionnaireCreate {
 	private Date sendMailTime;
 	@NotNull(message = "开始时间不能为空")
 	private Date from;
-	@NotNull(message ="结束时间不能为空")
+	@Future(message ="结束时间必须大于当前时间")
 	private Date to;
 	@Max(value = 2, message = "匿名参数错误")
 	@Min(value = 0, message = "匿名参数错误")

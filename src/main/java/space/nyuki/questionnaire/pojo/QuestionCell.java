@@ -49,5 +49,6 @@ public class QuestionCell {
 			})
 	@JsonProperty("must_answer")
 	private int mustAnswer;
+	private List<Integer> index;
 
 }
