@@ -37,6 +37,8 @@ public class QuestionnaireService {
 	private MailSenderService mailSenderService;
 	@Autowired
 	private MailSendScheduleService mailSendScheduleService;
+	@Autowired
+	private QuestionnaireEntityService questionnaireEntityService;
 
 	/**
 	 * 创建问卷调查表
@@ -288,14 +290,14 @@ public class QuestionnaireService {
 
 			questionnaireEntity.setMemberGroupName(memberGroupNameList);
 			Date sendMailTime = create.getSendMailTime();
-			QuestionnaireEntity q = mongoTemplate.save(questionnaireEntity);
+			QuestionnaireEntity q = questionnaireEntityService.save(questionnaireEntity);
 			if (sendMailTime.before(new Date())) {
 				mailSenderService.sendMail(members, q);
 			} else {
 				mailSendScheduleService.addSchedule(members, memberGroupNameList, q, sendMailTime);
 			}
 		} else {
-			mongoTemplate.save(questionnaireEntity);
+			questionnaireEntityService.save(questionnaireEntity);
 		}
 	}
 
@@ -305,6 +307,7 @@ public class QuestionnaireService {
 			List<QuestionCell> questionCells = questionGroup.getQuestionCells();
 			for (int a = 0; a < questionCells.size(); a++) {
 				QuestionCell questionCell = questionCells.get(a);
+				questionCell.setIndex(Arrays.asList(i, a));
 				List<AnswerCell> answerCells = questionCell.getAnswerCells();
 				for (int b = 0; b < answerCells.size(); b++) {
 					answerCells.get(b).setIndex(Arrays.asList(i, a, b));

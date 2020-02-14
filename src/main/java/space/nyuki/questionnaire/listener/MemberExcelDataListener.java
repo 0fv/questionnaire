@@ -16,11 +16,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-public class MemberDataListener extends AnalysisEventListener<Member> {
+public class MemberExcelDataListener extends AnalysisEventListener<Member> {
 	private MongoTemplate mongoTemplate;
 	private String gid;
 
-	public MemberDataListener(MongoTemplate mongoTemplate, String gid) {
+	public MemberExcelDataListener(MongoTemplate mongoTemplate, String gid) {
 		this.mongoTemplate = mongoTemplate;
 		this.gid = gid;
 	}

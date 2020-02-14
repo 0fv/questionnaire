@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import space.nyuki.questionnaire.exception.CanNotCreateException;
 import space.nyuki.questionnaire.exception.ElementNotFoundException;
-import space.nyuki.questionnaire.listener.MemberDataListener;
+import space.nyuki.questionnaire.listener.MemberExcelDataListener;
 import space.nyuki.questionnaire.pojo.Member;
 import space.nyuki.questionnaire.pojo.MemberGroup;
 import space.nyuki.questionnaire.utils.MapUtil;
@@ -75,7 +75,7 @@ public class MemberService {
 	@SneakyThrows
 	@Transactional
 	public void uploadData(String id, String token, MultipartFile file) {
-		EasyExcel.read(file.getInputStream(), Member.class, new MemberDataListener(mongoTemplate, id)).sheet().doRead();
+		EasyExcel.read(file.getInputStream(), Member.class, new MemberExcelDataListener(mongoTemplate, id)).sheet().doRead();
 		memberGroupService.updateEditDate(token, id);
 	}
 

@@ -12,6 +12,7 @@ services:
     container_name: t_rabbitmq
     ports:
       - 5672:5672
+      - 15672:15672
     hostname: mq1
     environment:
       - RABBITMQ_DEFAULT_VHOST=my_vhost

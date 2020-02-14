@@ -20,8 +20,10 @@ spring:
       uri: mongodb://127.0.0.1/question
   mail:
     default-encoding: UTF-8
-
-
+  rabbitmq:
+    username: admin
+    password: 123123
+    virtual-host: my_vhost
   servlet:
     multipart:
       file-size-threshold: 4KB
