@@ -31,9 +31,9 @@ public class ResultCollection {
 	@Field("submit_date")
 	@JsonProperty("submit_date")
 	private Date submitDate;
-	@Field("result_groups")
-	@JsonProperty("result_groups")
-	private List<ResultGroup> resultGroups;
+	@Field("submit_result_groups")
+	@JsonProperty("submit_result_groups")
+	private List<SubmitResultGroup> submitResultGroups;
 	@Field("name")
 	@JsonProperty("name")
 	private String name;

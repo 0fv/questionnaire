@@ -111,7 +111,6 @@ public class QuestionnaireController {
 			@RequestBody
 					QuestionnaireCreate questionnaireCreate,
 			BindingResult result) {
-		System.out.println(questionnaireCreate);
 		questionnaireService.create(questionnaireCreate, token);
 		return TransFactory.getSuccessResponse();
 	}

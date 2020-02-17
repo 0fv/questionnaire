@@ -16,16 +16,16 @@ public class MD5Util {
         if (str == null || str.length() == 0) {
             throw new IllegalArgumentException("String to encript cannot be null or zero length");
         }
-        StringBuffer hexString = new StringBuffer();
+        StringBuilder hexString = new StringBuilder();
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(str.getBytes());
             byte[] hash = md.digest();
-            for (int i = 0; i < hash.length; i++) {
-                if ((0xff & hash[i]) < 0x10) {
-                    hexString.append("0" + Integer.toHexString((0xFF & hash[i])));
+            for (byte b : hash) {
+                if ((0xff & b) < 0x10) {
+                    hexString.append("0").append(Integer.toHexString((0xFF & b)));
                 } else {
-                    hexString.append(Integer.toHexString(0xFF & hash[i]));
+                    hexString.append(Integer.toHexString(0xFF & b));
                 }
             }
         } catch (NoSuchAlgorithmException e) {
@@ -37,7 +37,7 @@ public class MD5Util {
     public static String saltMd5(String str) {
         String s = md5crypt(str);
         String substring = s.substring(0, 10);
-        String substring1 = s.substring(10, s.length());
+        String substring1 = s.substring(10);
         String f = substring1 + substring;
         return md5crypt(f);
     }

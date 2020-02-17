@@ -7,6 +7,7 @@ import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import space.nyuki.questionnaire.pojo.ResultTemplate;
+import space.nyuki.questionnaire.pojo.SubmitResult;
 import space.nyuki.questionnaire.service.ResultCollectionService;
 
 import java.io.IOException;
@@ -21,8 +22,8 @@ public class QueueMessageListener implements ChannelAwareMessageListener {
 	@Override
 	public void onMessage(Message message, Channel channel) {
 		try {
-			ResultTemplate resultTemplate = objectMapper.readValue(message.getBody(), ResultTemplate.class);
-			resultCollectionService.saveData(resultTemplate);
+			SubmitResult submitResult = objectMapper.readValue(message.getBody(), SubmitResult.class);
+			resultCollectionService.saveData(submitResult);
 			channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
 		} catch (Exception e) {
 			try {

@@ -7,10 +7,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import space.nyuki.questionnaire.pojo.Member;
-import space.nyuki.questionnaire.pojo.QuestionnaireEntity;
-import space.nyuki.questionnaire.pojo.ResultCollection;
-import space.nyuki.questionnaire.pojo.ResultTemplate;
+import space.nyuki.questionnaire.pojo.*;
 
 import java.util.Date;
 import java.util.List;
@@ -26,9 +23,9 @@ public class ResultCollectionService {
 	private RedisTemplate<String, String> redisTemplate;
 
 	@Transactional
-	public void saveData(ResultTemplate resultTemplate) {
-		String id = resultTemplate.getId();
-		String fingerPrint = resultTemplate.getFingerPrint();
+	public void saveData(SubmitResult submitResult) {
+		String id = submitResult.getId();
+		String fingerPrint = submitResult.getFingerPrint();
 		String resultTable = "result:" + id;
 		ResultCollection resultCollection = new ResultCollection();
 		QuestionnaireEntity entity = questionnaireEntityService.getDataById(id);
@@ -36,7 +33,7 @@ public class ResultCollectionService {
 			resultCollection.setFingerPrint(fingerPrint);
 			resultCollection.setEntityId(id);
 			resultCollection.setSubmitDate(new Date());
-			resultCollection.setResultGroups(resultTemplate.getResultGroups());
+			resultCollection.setSubmitResultGroups(submitResult.getSubmitResultGroups());
 			mongoTemplate.save(resultCollection, resultTable);
 			redisTemplate.opsForList().leftPush(resultTable, fingerPrint);
 		}
@@ -69,5 +66,9 @@ public class ResultCollectionService {
 		} else {
 			return true;
 		}
+	}
+
+	public List<ResultCollection> getData(String id) {
+		return mongoTemplate.findAll(ResultCollection.class, "result:" + id);
 	}
 }

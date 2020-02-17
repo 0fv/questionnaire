@@ -5,18 +5,21 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.nyuki.questionnaire.exception.CanNotEditException;
 import space.nyuki.questionnaire.exception.ElementNotFoundException;
 import space.nyuki.questionnaire.exception.FormatNotCorrectException;
-import space.nyuki.questionnaire.pojo.*;
-import space.nyuki.questionnaire.pojo.answer.AnswerCell;
+import space.nyuki.questionnaire.pojo.PageContainer;
+import space.nyuki.questionnaire.pojo.Questionnaire;
+import space.nyuki.questionnaire.pojo.QuestionnaireCreate;
 import space.nyuki.questionnaire.utils.JWTUtil;
 import space.nyuki.questionnaire.utils.MapUtil;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static org.springframework.data.mongodb.core.query.Query.query;
 
@@ -29,16 +32,9 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 public class QuestionnaireService {
 	@Autowired
 	private MongoTemplate mongoTemplate;
+
 	@Autowired
-	private MemberService memberService;
-	@Autowired
-	private MemberGroupService memberGroupService;
-	@Autowired
-	private MailSenderService mailSenderService;
-	@Autowired
-	private MailSendScheduleService mailSendScheduleService;
-	@Autowired
-	private QuestionnaireEntityService questionnaireEntityService;
+	private QuestionnaireEntityCreateService questionnaireEntityCreateService;
 
 	/**
 	 * 创建问卷调查表
@@ -259,61 +255,7 @@ public class QuestionnaireService {
 		if (create.getFrom().after(create.getTo())) {
 			throw new FormatNotCorrectException("开始时间必须小于结束时间");
 		}
-		createNewInstance(create, token);
-	}
-
-	@Transactional
-	@Async("taskExecutor")
-	public void createNewInstance(QuestionnaireCreate create, String token) {
-		String username = JWTUtil.getUsername(token);
-		String id = create.getQuestionnaireId();
-		Questionnaire questionnaire = getFinishQuestionnaireById(id);
-		QuestionnaireEntity questionnaireEntity = new QuestionnaireEntity();
-		questionnaireEntity.setTitle(create.getName());
-		questionnaireEntity.setCreatedAccount(username);
-		questionnaireEntity.setFrom(create.getFrom());
-		questionnaireEntity.setTo(create.getTo());
-		questionnaireEntity.setIntroduce(questionnaire.getIntroduce());
-		questionnaireEntity.setIsAnonymous(create.getIsAnonymous());
-		questionnaireEntity.setPagination(create.getPagination());
-		List<QuestionGroup> questionGroups = setIndex(questionnaire.getQuestionGroups());
-		questionnaireEntity.setQuestionGroups(questionGroups);
-		if (create.getPagination() == 2) {
-			questionnaireEntity.setPageSize(create.getPageSize());
-		}
-		if (create.getIsAnonymous() == 1) {
-
-			List<String> memberId = create.getMemberId();
-			List<Member> members = memberService.getMembersById(memberId);
-			List<String> memberGroupNameList = memberGroupService.getGroupName(memberId);
-			questionnaireEntity.setMembers(members);
-
-			questionnaireEntity.setMemberGroupName(memberGroupNameList);
-			Date sendMailTime = create.getSendMailTime();
-			QuestionnaireEntity q = questionnaireEntityService.save(questionnaireEntity);
-			if (sendMailTime.before(new Date())) {
-				mailSenderService.sendMail(members, q);
-			} else {
-				mailSendScheduleService.addSchedule(members, memberGroupNameList, q, sendMailTime);
-			}
-		} else {
-			questionnaireEntityService.save(questionnaireEntity);
-		}
-	}
-
-	private List<QuestionGroup> setIndex(List<QuestionGroup> groups) {
-		for (int i = 0; i < groups.size(); i++) {
-			QuestionGroup questionGroup = groups.get(i);
-			List<QuestionCell> questionCells = questionGroup.getQuestionCells();
-			for (int a = 0; a < questionCells.size(); a++) {
-				QuestionCell questionCell = questionCells.get(a);
-				questionCell.setIndex(Arrays.asList(i, a));
-				List<AnswerCell> answerCells = questionCell.getAnswerCells();
-				for (int b = 0; b < answerCells.size(); b++) {
-					answerCells.get(b).setIndex(Arrays.asList(i, a, b));
-				}
-			}
-		}
-		return groups;
+		Questionnaire questionnaire = this.getFinishQuestionnaireById(create.getQuestionnaireId());
+		questionnaireEntityCreateService.createNewInstance(create, questionnaire, token);
 	}
 }

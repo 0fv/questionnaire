@@ -31,7 +31,6 @@ public class Comment implements AnswerCell {
 	private Integer limit;
 	private Integer line;
 	private Boolean empty;
-	private String answer;
 	private List<Integer> index;
 
 }
