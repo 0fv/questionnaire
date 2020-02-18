@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -16,9 +14,9 @@ import space.nyuki.questionnaire.group.GroupView;
 import space.nyuki.questionnaire.pojo.Member;
 import space.nyuki.questionnaire.pojo.TransData;
 import space.nyuki.questionnaire.service.MemberService;
+import space.nyuki.questionnaire.utils.FileDownloadUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/member")
@@ -66,25 +64,14 @@ public class MemberController {
 	@GetMapping("template")
 	public ResponseEntity<Resource> downloadTemplate(HttpServletRequest request) {
 		Resource resource = memberService.getTemplateFile();
-		return responseEntity(request, resource);
+		return FileDownloadUtil.responseEntity(request, resource);
 	}
 
 	@SneakyThrows
 	@GetMapping("export/{gid}")
 	public ResponseEntity<Resource> exportMember(HttpServletRequest request, @PathVariable(name = "gid") String gid) {
 		Resource resource = memberService.exportData(gid);
-		return responseEntity(request, resource);
-	}
-
-	private ResponseEntity<Resource> responseEntity(HttpServletRequest request, Resource resource) throws IOException {
-		String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-		if (contentType == null) {
-			contentType = "application/octet-stream";
-		}
-		return ResponseEntity.ok()
-				.contentType(MediaType.parseMediaType(contentType))
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-				.body(resource);
+		return FileDownloadUtil.responseEntity(request, resource);
 	}
 
 	@PostMapping("upload/{id}")

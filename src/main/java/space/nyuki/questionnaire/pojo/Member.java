@@ -1,5 +1,6 @@
 package space.nyuki.questionnaire.pojo;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -20,9 +21,11 @@ public class Member {
 			message = "id不能为空",
 			groups = GroupView.Update.class
 	)
+	@ExcelIgnore
 	@JsonView(GroupView.View.class)
 	private String id;
 	@Field
+	@ExcelIgnore
 	private String gid;
 	@Field
 	@NotBlank(

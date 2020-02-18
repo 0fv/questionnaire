@@ -20,5 +20,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 @JsonInclude
 public interface ResultCell {
 	void setTitle(String title);
+
+	String getTitle();
+
 	void setMustAnswer(boolean flag);
 }

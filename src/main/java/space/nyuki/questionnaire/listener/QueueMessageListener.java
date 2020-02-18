@@ -6,7 +6,6 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import space.nyuki.questionnaire.pojo.ResultTemplate;
 import space.nyuki.questionnaire.pojo.SubmitResult;
 import space.nyuki.questionnaire.service.ResultCollectionService;
 
@@ -18,7 +17,6 @@ public class QueueMessageListener implements ChannelAwareMessageListener {
 	private ObjectMapper objectMapper;
 	@Autowired
 	private ResultCollectionService resultCollectionService;
-
 	@Override
 	public void onMessage(Message message, Channel channel) {
 		try {
