@@ -58,6 +58,14 @@ public class ResultCollectionService {
 
 	}
 
+	public List<ResultCollection> getResultGreatThanId(String resultId, String id) {
+		return mongoTemplate.find(
+				Query.query(Criteria.where("_id").gt(id)),
+				ResultCollection.class,
+				"result:" + resultId
+		);
+	}
+
 	private boolean resultCheck(String resultTable, String fingerPrint) {
 		ResultCollection resultCollectionByFingerPrintId = getResultCollectionByFingerPrintId(fingerPrint, resultTable);
 		return Objects.isNull(resultCollectionByFingerPrintId);
@@ -91,8 +99,11 @@ public class ResultCollectionService {
 	}
 
 	@SneakyThrows
+	// TODO cache add
 	public Resource exportXls(String id) {
 		List<ResultCollection> resultCollections = getData(id);
+		QuestionnaireEntity dataById = questionnaireEntityService.getDataById(id);
+		String title = dataById.getTitle();
 		if (resultCollections.isEmpty()) {
 			throw new EmptyFileException();
 		}
@@ -103,7 +114,7 @@ public class ResultCollectionService {
 		ResultCollection resultCollection = resultCollections.get(0);
 		setHeader(resultCollection, sheet);
 		setContent(resultCollections, sheet);
-		String filename = this.dir + File.separator + "编号" + id + "统计报告" + ".xlsx";
+		String filename = this.dir + File.separator + title + "编号（" + id + "）统计报告" + ".xlsx";
 		FileOutputStream fileOutputStream = new FileOutputStream(filename);
 		wb.write(fileOutputStream);
 		wb.close();
@@ -115,9 +126,9 @@ public class ResultCollectionService {
 		ResultCollection resultCollection = resultCollections.get(0);
 
 		if (resultCollection.getName() == null) {
-			setNoNameContent(resultCollections,sheet);
-		}else{
-			setHasNameContent(resultCollections,sheet);
+			setNoNameContent(resultCollections, sheet);
+		} else {
+			setHasNameContent(resultCollections, sheet);
 		}
 	}
 
