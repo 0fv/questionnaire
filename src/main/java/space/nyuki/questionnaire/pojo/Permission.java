@@ -14,26 +14,29 @@ import space.nyuki.questionnaire.group.GroupView;
 		GroupView.UpdateAccess.class
 })
 public class Permission {
-	private boolean questionnaire;
+	private String questionnaire;
 	@JsonProperty("question_cells")
 	@Field("question_cells")
-	private boolean questionCells;
+	private String questionCells;
 	@JsonProperty("question_groups")
 	@Field("question_groups")
-	private boolean questionGroups;
+	private String questionGroups;
 	@JsonProperty("inquiry_crew")
 	@Field("inquiry_crew")
-	private boolean inquiryCrew;
+	private String inquiryCrew;
 	@JsonProperty("inquiry_config")
 	@Field("inquiry_config")
-	private boolean inquiryConfig;
+	private String inquiryConfig;
 	@JsonProperty("result_show")
 	@Field("result_show")
-	private boolean resultShow;
+	private String resultShow;
 	@JsonProperty("template_control")
 	@Field("template_control")
-	private boolean tmeplateControl;
+	private String templateControl;
 	@JsonProperty("account_management")
 	@Field("account_management")
-	private boolean accountManagement;
+	private String accountManagement;
+	@JsonProperty("mail_management")
+	@Field("mail_management")
+	private String mailManagement;
 }

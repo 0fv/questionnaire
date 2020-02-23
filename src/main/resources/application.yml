@@ -35,4 +35,6 @@ server:
 temp-file:
   dir: /tmp
 
-
+#logging:
+#  level:
+#    web: DEBUG

@@ -103,7 +103,10 @@ public class User {
 	@Field("is_super")
 	@JsonView({
 			GroupView.LoginInfo.class,
-			GroupView.View.class
+			GroupView.View.class,
+			GroupView.UpdateAccess.class,
+			GroupView.Create.class,
+			GroupView.GetById.class
 	})
 	// 1 管理员 0 不是
 	private int isSuper;

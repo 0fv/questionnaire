@@ -101,10 +101,7 @@ public class UserService {
 		User user = this.getUserByUserName(username);
 		SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
 		MapUtil.objectToMap(user.getPermission()).forEach((k, v) -> {
-			boolean vv = (boolean) v;
-			if (vv) {
-				simpleAuthorizationInfo.addRole(k);
-			}
+			simpleAuthorizationInfo.addStringPermission(k+":"+v);
 		});
 		return simpleAuthorizationInfo;
 	}

@@ -8,6 +8,7 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import space.nyuki.questionnaire.pojo.User;
 import space.nyuki.questionnaire.service.UserService;
 import space.nyuki.questionnaire.token.JWTToken;
@@ -15,10 +16,11 @@ import space.nyuki.questionnaire.utils.JWTUtil;
 
 import java.util.Objects;
 
+@Component("myRealm")
 public class MyRealm extends AuthorizingRealm {
 
 	@Autowired
-	UserService userService;
+	private UserService userService;
 
 	@Override
 	public boolean supports(AuthenticationToken token) {

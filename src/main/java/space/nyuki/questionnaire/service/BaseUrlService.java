@@ -22,9 +22,9 @@ public class BaseUrlService {
 
 	@Transactional
 	public void setUrl(BaseUrl baseUrl) {
-		this.url.setId("url");
 		this.url = baseUrl;
-		mongoTemplate.save(baseUrl);
+		this.url.setId("url");
+		mongoTemplate.save(url);
 	}
 
 	public BaseUrl getBaseUrl() {

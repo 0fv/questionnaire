@@ -1,6 +1,7 @@
 package space.nyuki.questionnaire.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -13,18 +14,21 @@ import space.nyuki.questionnaire.service.QuestionCollectionService;
 
 @RequestMapping("/questionCollection")
 @RestController
+@RequiresPermissions("question_cells:w")
 public class QuestionCollectionController {
 	@Autowired
 	private QuestionCollectionService questionCollectionService;
 
 	@GetMapping
 	@JsonView(GroupView.View.class)
+	@RequiresPermissions("question_cells:r")
 	public TransData getData() {
 		return TransFactory.getSuccessResponse(questionCollectionService.getQuestionCollection());
 	}
 
 	@GetMapping("{id}")
 	@JsonView(GroupView.GetById.class)
+	@RequiresPermissions("question_cells:r")
 	public TransData getDataById(@PathVariable(name = "id") String id) {
 		return TransFactory.getSuccessResponse(questionCollectionService.getQuestionCollectionById(id));
 	}

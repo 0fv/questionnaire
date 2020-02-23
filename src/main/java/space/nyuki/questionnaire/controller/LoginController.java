@@ -43,6 +43,20 @@ public class LoginController {
 		loginInfo.put("user", userInfo);
 		return TransFactory.getSuccessResponse(loginInfo);
 	}
+	@PostMapping("/login/token")
+	public TransData tokenLogin(@RequestBody Map<String,String> token){
+		String token1 = token.get("token");
+		Subject subject = SecurityUtils.getSubject();
+		subject.login(new JWTToken(token1));
+		String username = JWTUtil.getUsername(token1);
+		User userInfo = userService.getLoginInfo(username);
+		Map<String, Object> loginInfo = new HashMap<>();
+		loginInfo.put("token", token1);
+		loginInfo.put("user", userInfo);
+		return TransFactory.getSuccessResponse(loginInfo);
+
+
+	}
 
 	@RequestMapping(value = "/authenticationFailed",
 			method = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})

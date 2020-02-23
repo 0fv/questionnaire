@@ -1,6 +1,7 @@
 package space.nyuki.questionnaire.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -13,12 +14,14 @@ import space.nyuki.questionnaire.service.QuestionnaireEntityService;
 
 @RestController
 @RequestMapping("questionnaireEntity")
+@RequiresPermissions({"questionnaire:w","result_show:w"})
 public class QuestionnaireEntityController {
 	@Autowired
 	private QuestionnaireEntityService questionnaireEntityService;
 
 	@GetMapping
 	@JsonView(GroupView.View.class)
+	@RequiresPermissions({"questionnaire:r","result_show:r"})
 	public TransData getData(@RequestParam(value = "isFinish", required = false, defaultValue = "0") int isFinish) {
 		return TransFactory.getSuccessResponse(questionnaireEntityService.getData(isFinish));
 	}
@@ -41,12 +44,14 @@ public class QuestionnaireEntityController {
 	}
 
 	@PutMapping("toFinish/{id}")
+	@RequiresPermissions({"questionnaire:w"})
 	public TransData updateFinish(@PathVariable(name = "id") String id) {
 		questionnaireEntityService.updateFinish(id);
 		return TransFactory.getSuccessResponse();
 	}
 
 	@PutMapping("delay")
+	@RequiresPermissions({"questionnaire:w","result_show:w"})
 	public TransData updateFinishTime(@RequestBody
 	                                  @Validated
 	                                  @JsonView(GroupView.UpdateTime.class)

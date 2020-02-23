@@ -1,6 +1,7 @@
 package space.nyuki.questionnaire.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ public class ResultStatisticsController {
 
 	@GetMapping("{id}")
 	@JsonView(GroupView.View.class)
+	@RequiresPermissions({"questionnaire:r","result_show:r"})
 	public TransData getDataById(@PathVariable("id") String id) {
 		ChoiceStatisticsCollection dataById = resultStatisticsService.getDataById(id);
 		return TransFactory.getSuccessResponse(dataById);

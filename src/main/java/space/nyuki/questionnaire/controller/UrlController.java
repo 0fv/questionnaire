@@ -1,6 +1,7 @@
 package space.nyuki.questionnaire.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -13,11 +14,13 @@ import space.nyuki.questionnaire.service.BaseUrlService;
 
 @RestController
 @RequestMapping("/url")
+@RequiresPermissions("mail_management:w")
 public class UrlController {
 	@Autowired
 	private BaseUrlService baseUrlService;
 
 	@GetMapping
+	@RequiresPermissions("mail_management:r")
 	public TransData getData() {
 		return TransFactory.getSuccessResponse(baseUrlService.getBaseUrl());
 	}

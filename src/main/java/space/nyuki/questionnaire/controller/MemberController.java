@@ -2,6 +2,7 @@ package space.nyuki.questionnaire.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.SneakyThrows;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,13 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/member")
+@RequiresPermissions("inquiry_crew:w")
 public class MemberController {
 	@Autowired
 	MemberService memberService;
 
 	@GetMapping("{gid}")
+	@RequiresPermissions("inquiry_crew:r")
 	@JsonView(GroupView.View.class)
 	public TransData getData(@PathVariable(name = "gid") String gid) {
 		return TransFactory.getSuccessResponse(memberService.getData(gid));
@@ -62,6 +65,7 @@ public class MemberController {
 
 	@SneakyThrows
 	@GetMapping("template")
+	@RequiresPermissions("inquiry_crew:r")
 	public ResponseEntity<Resource> downloadTemplate(HttpServletRequest request) {
 		Resource resource = memberService.getTemplateFile();
 		return FileDownloadUtil.responseEntity(request, resource);
@@ -69,6 +73,7 @@ public class MemberController {
 
 	@SneakyThrows
 	@GetMapping("export/{gid}")
+	@RequiresPermissions("inquiry_crew:r")
 	public ResponseEntity<Resource> exportMember(HttpServletRequest request, @PathVariable(name = "gid") String gid) {
 		Resource resource = memberService.exportData(gid);
 		return FileDownloadUtil.responseEntity(request, resource);

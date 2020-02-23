@@ -40,3 +40,6 @@ AccessDenied:
 QuestionnaireNotFound:
   code: 4012
   msg: 未找到当前问卷编号
+Unauthorized:
+  code: 4013
+  msg: 当前用户无此权限

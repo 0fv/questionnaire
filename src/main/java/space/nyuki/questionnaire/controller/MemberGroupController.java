@@ -1,6 +1,7 @@
 package space.nyuki.questionnaire.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -13,11 +14,13 @@ import space.nyuki.questionnaire.service.MemberGroupService;
 
 @RestController
 @RequestMapping("memberGroup")
+@RequiresPermissions("inquiry_crew:w")
 public class MemberGroupController {
 	@Autowired
 	private MemberGroupService memberGroupService;
 
 	@GetMapping
+	@RequiresPermissions("inquiry_crew:r")
 	@JsonView(GroupView.View.class)
 	public TransData getData() {
 		return TransFactory.getSuccessResponse(

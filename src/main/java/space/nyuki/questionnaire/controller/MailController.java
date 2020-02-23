@@ -1,6 +1,7 @@
 package space.nyuki.questionnaire.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +15,7 @@ import space.nyuki.questionnaire.service.MailSenderService;
 
 @RestController
 @RequestMapping("mail")
+@RequiresPermissions("mail_management:w")
 public class MailController {
 	@Autowired
 	private MailSenderService mailSenderService;
@@ -21,6 +23,7 @@ public class MailController {
 	private MailSendScheduleService mailSendScheduleService;
 
 	@GetMapping
+	@RequiresPermissions("mail_management:r")
 	public TransData getData() {
 		return TransFactory.getSuccessResponse(mailSenderService.getMailInfo());
 	}
@@ -37,11 +40,13 @@ public class MailController {
 	}
 
 	@GetMapping("log")
+	@RequiresPermissions("mail_management:r")
 	public TransData getLogData() {
 		return TransFactory.getSuccessResponse(mailSenderService.getLogData());
 	}
 
 	@GetMapping("schedule")
+	@RequiresPermissions("mail_management:r")
 	@JsonView(GroupView.View.class)
 	public TransData getSchedule() {
 		return TransFactory.getSuccessResponse(mailSenderService.getScheduleData());
