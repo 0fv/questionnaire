@@ -1,5 +1,7 @@
 package space.nyuki.questionnaire.controller;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresGuest;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -17,21 +19,20 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("resultCollection")
-@RequiresPermissions({"questionnaire:w","result_show:w"})
 public class ResultCollectionController {
 	@Autowired
 	private ResultCollectionService resultCollectionService;
 
 	@GetMapping("{id}")
-	@RequiresPermissions({"questionnaire:r","result_show:r"})
+	@RequiresPermissions({"questionnaire:r","result_show:r","questionnaire:w","result_show:w"})
 	public TransData getData(@PathVariable("id") String id) {
 		return TransFactory.getSuccessResponse(resultCollectionService.getData(id));
 	}
 
 	@GetMapping("export/{id}")
-	@RequiresPermissions({"questionnaire:r","result_show:r"})
+	@RequiresGuest
 	public ResponseEntity<Resource> exportXls(@PathVariable("id") String id, HttpServletRequest request) {
-
+		System.out.println(SecurityUtils.getSubject().getPrincipal());
 		Resource resource = resultCollectionService.exportXls(id);
 		return FileDownloadUtil.responseEntity(request, resource);
 	}

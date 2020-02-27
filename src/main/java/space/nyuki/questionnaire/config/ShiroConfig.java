@@ -57,6 +57,8 @@ public class ShiroConfig {
 		rules.put("/", "anon");
 		rules.put("/favicon.ico", "anon");
 		rules.put("/assets/**", "anon");
+		rules.put("/resultCollection/export/**", "anon");
+		rules.put("/member/eport/**", "anon");
 		rules.put("/**", "jwt");
 //		rules.put("/**", "anon");
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(rules);

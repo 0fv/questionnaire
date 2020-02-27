@@ -41,6 +41,8 @@ public class ResultStatisticsService {
 				String lastId = collection.getLastId();
 				if (lastId != null && (!lastId.isEmpty())) {
 					data = resultCollectionService.getResultGreatThanId(id, lastId);
+				} else {
+					data = resultCollectionService.getData(id);
 				}
 			}
 			if (data != null && (!data.isEmpty())) {
@@ -138,6 +140,6 @@ public class ResultStatisticsService {
 	}
 
 	public ChoiceStatisticsCollection getDataById(String id) {
-		return mongoTemplate.findOne(Query.query(Criteria.where("_id").is(id)),ChoiceStatisticsCollection.class);
+		return mongoTemplate.findOne(Query.query(Criteria.where("_id").is(id)), ChoiceStatisticsCollection.class);
 	}
 }

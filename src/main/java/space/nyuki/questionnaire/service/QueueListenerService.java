@@ -63,6 +63,5 @@ public class QueueListenerService {
 			rabbitAdmin.declareBinding(binding);
 		}
 	}
-
 }
 
